@@ -1,15 +1,18 @@
+// https://cdn2.vectorstock.com/i/1000x1000/91/36/castle-tower-pixel-vector-41309136.jpg
+
+#include <FEHImages.h>
 #include <FEHLCD.h>
+#include <FEHRandom.h>
 #include <FEHUtility.h>
 #include <cmath>
 #include <iostream>
 #include <memory>
 #include <sstream>
-#include <vector>
-#include <FEHImages.h>
 #include <utility>
+#include <vector>
 using namespace std;
 
-const vector<string> INSTRUCTIONS {
+const vector<string> INSTRUCTIONS{
     "TANKS is a 2 player game.",
     "Goal: destroy the",
     "other tank with 3",
@@ -19,9 +22,9 @@ const vector<string> INSTRUCTIONS {
     "click to shoot.",
     "Gravity and random wind",
     "affect the projectile.",
-    
+
 };
-const vector<string> CREDITS {
+const vector<string> CREDITS{
     "Created by:",
     "Joshua Sims",
     "Dennis Zhitenev",
@@ -37,6 +40,10 @@ unsigned int rgb(float r, float g, float b) {
 // with size (rw, rh)
 bool inRectangle(int rx, int ry, int rw, int rh, int px, int py) {
     return px >= rx && px <= rx + rw && py >= ry && py <= ry + rh;
+}
+
+int randBetween(int low, int high) {
+    return low + Random.RandInt() % (high - low);
 }
 
 const int LCD_WIDTH = 320;
@@ -77,20 +84,24 @@ class Menu {
             LCD.WriteAt(name, center(strlen(name) * 16, LCD_WIDTH), 32);
             int topButton = 64;
             int buttonSpace = buttonHeight + 8;
-            if (button("Play", center(buttonWidth, LCD_WIDTH), topButton+buttonSpace*0, buttonWidth,
+            if (button("Play", center(buttonWidth, LCD_WIDTH),
+                       topButton + buttonSpace * 0, buttonWidth,
                        buttonHeight)) {
                 return true;
             };
             if (button("Statistics", center(buttonWidth, LCD_WIDTH),
-                       topButton+buttonSpace*1, buttonWidth, buttonHeight)) {
+                       topButton + buttonSpace * 1, buttonWidth,
+                       buttonHeight)) {
                 state = STATE_STATISTICS;
             };
             if (button("Instructions", center(buttonWidth, LCD_WIDTH),
-                       topButton+buttonSpace*2, buttonWidth, buttonHeight)) {
+                       topButton + buttonSpace * 2, buttonWidth,
+                       buttonHeight)) {
                 state = STATE_INSTRUCTIONS;
             };
-            if (button("Credits", center(buttonWidth, LCD_WIDTH), topButton+buttonSpace*3,
-                       buttonWidth, buttonHeight)) {
+            if (button("Credits", center(buttonWidth, LCD_WIDTH),
+                       topButton + buttonSpace * 3, buttonWidth,
+                       buttonHeight)) {
                 state = STATE_CREDITS;
             };
             break;
@@ -115,8 +126,10 @@ class Menu {
 
         if (state != STATE_MAIN_MENU) {
             int margin = 16;
-            int backButtonWidth = 16*6;
-            if (button("Back", LCD_WIDTH - backButtonWidth - margin, LCD_HEIGHT - buttonHeight - margin, backButtonWidth, buttonHeight)) {
+            int backButtonWidth = 16 * 6;
+            if (button("Back", LCD_WIDTH - backButtonWidth - margin,
+                       LCD_HEIGHT - buttonHeight - margin, backButtonWidth,
+                       buttonHeight)) {
                 state = STATE_MAIN_MENU;
             }
         }
@@ -131,7 +144,7 @@ class Menu {
 
     void writeStrings(vector<string> strings) {
         for (int i = 0; i < strings.size(); i++) {
-            LCD.WriteAt(strings[i].c_str(), 16, 16+18*i);
+            LCD.WriteAt(strings[i].c_str(), 16, 16 + 18 * i);
         }
     }
 
@@ -157,6 +170,7 @@ class Tank {
         leftOrRight = lor;
         if (lor == 'l') {
             xPos = LCD_WIDTH / 4; // change to randomized value
+            tankImg.Open("icons/left tank.pic");
         } else if (lor == 'r') {
             xPos = 3 * LCD_WIDTH / 4; // change to randomized value
         } else {
@@ -165,21 +179,20 @@ class Tank {
     }
 
     void draw(int groundLevel) {
-        yPos = groundLevel+TANK_DIM;
-        FEHImage tankImg;
-        
+        yPos = groundLevel - TANK_DIM;
+
         if (leftOrRight == 'l') {
             tankImg.Open("icons/left tank.pic");
         } else {
             tankImg.Open("icons/right tank.pic");
         }
 
-        tankImg.Close();
         tankImg.Draw(xPos, yPos);
+        //tankImg.Close();
     }
 
     pair<int, int> getVectorTo(int mouseX, int mouseY) {
-        return pair<int, int>(mouseX-xPos, mouseY-yPos);
+        return pair<int, int>(mouseX - xPos, mouseY - yPos);
     }
 
     bool containsPoint(int x, int y) {
@@ -189,19 +202,31 @@ class Tank {
   private:
     int xPos, yPos;
     char leftOrRight;
+    FEHImage tankImg;
 };
 
 class Game {
 
   public:
     Game() : leftTank('l'), rightTank('r') {
+        rightGroundLevel = LCD_HEIGHT - 16;
+        leftGroundLevel = randBetween(LCD_HEIGHT / 2, rightGroundLevel - 25);
     }
 
     void draw() {
-        LCD.Clear();
-        int groundLevel = 10;
-        leftTank.draw(groundLevel);
-        rightTank.draw(groundLevel);
+        LCD.Clear(0x05214d);
+
+        leftTank.draw(leftGroundLevel);
+
+        LCD.SetFontColor(groundColor);
+        LCD.FillRectangle(0, leftGroundLevel, LCD_WIDTH / 2,
+                          LCD_HEIGHT - leftGroundLevel);
+
+        rightTank.draw(rightGroundLevel);
+
+        LCD.SetFontColor(groundColor);
+        LCD.FillRectangle(LCD_WIDTH / 2, rightGroundLevel, LCD_WIDTH / 2,
+                          LCD_HEIGHT - rightGroundLevel);
     }
 
     bool mouseDown;
@@ -211,7 +236,15 @@ class Game {
   private:
     Tank leftTank;
     Tank rightTank;
+    int leftGroundLevel;
+    int rightGroundLevel;
+
+    unsigned int groundColor = 0x705301;
 };
+
+// class Castle {
+//     public:
+// }
 
 int main() {
     double t = TimeNow();
