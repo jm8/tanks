@@ -1,5 +1,3 @@
-// https://cdn2.vectorstock.com/i/1000x1000/91/36/castle-tower-pixel-vector-41309136.jpg
-
 #include "src/common.h"
 #include "src/menu.h"
 #include <FEHImages.h>
@@ -31,7 +29,7 @@ class Tank {
     }
 
     void draw(int groundLevel) {
-        yPos = groundLevel - TANK_DIM;
+        yPos = groundLevel - TANK_DIM; // should probably be added to the constructor
 
         if (leftOrRight == 'l') {
             tankImg.Open("icons/left tank.pic");
