@@ -5,6 +5,8 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+#include <FEHImages.h>
+#include <utility>
 using namespace std;
 
 const vector<string> INSTRUCTIONS {
@@ -39,6 +41,7 @@ bool inRectangle(int rx, int ry, int rw, int rh, int px, int py) {
 
 const int LCD_WIDTH = 320;
 const int LCD_HEIGHT = 240;
+const int TANK_DIM = 14;
 
 // Returns the x coordinate of the left position needed to center
 // something of width size in something of width max_size. (also works with y
@@ -56,7 +59,6 @@ class Menu {
 
     enum {
         STATE_MAIN_MENU,
-        STATE_PLAY_GAME,
         STATE_STATISTICS,
         STATE_INSTRUCTIONS,
         STATE_CREDITS,
@@ -64,7 +66,8 @@ class Menu {
 
     // Draws the menu (called as often as possible)
     // dt Time elapsed since last time update was called (in seconds)
-    void update(double dt) {
+    // returns true if it should play the game
+    bool update(double dt) {
         mousePressed = mouseDown && !mouseWasDown;
         mouseWasDown = mouseDown;
         LCD.Clear(rgb(0.9, 0.9, 0.9));
@@ -76,7 +79,7 @@ class Menu {
             int buttonSpace = buttonHeight + 8;
             if (button("Play", center(buttonWidth, LCD_WIDTH), topButton+buttonSpace*0, buttonWidth,
                        buttonHeight)) {
-                state = STATE_PLAY_GAME;
+                return true;
             };
             if (button("Statistics", center(buttonWidth, LCD_WIDTH),
                        topButton+buttonSpace*1, buttonWidth, buttonHeight)) {
@@ -92,9 +95,6 @@ class Menu {
             };
             break;
         }
-        case STATE_PLAY_GAME:
-            writeStrings({"Play the game"});
-            break;
         case STATE_INSTRUCTIONS:
             writeStrings(INSTRUCTIONS);
             break;
@@ -120,6 +120,8 @@ class Menu {
                 state = STATE_MAIN_MENU;
             }
         }
+
+        return false;
     }
 
   private:
@@ -163,12 +165,25 @@ class Tank {
     }
 
     void draw(int groundLevel) {
-        yPos = groundLevel; // should add height of tank
-        // actually draw tank
+        yPos = groundLevel+TANK_DIM;
+        FEHImage tankImg;
+        
+        if (leftOrRight == 'l') {
+            tankImg.Open("icons/left tank.pic");
+        } else {
+            tankImg.Open("icons/right tank.pic");
+        }
+
+        tankImg.Close();
+        tankImg.Draw(xPos, yPos);
     }
 
     pair<int, int> getVectorTo(int mouseX, int mouseY) {
         return pair<int, int>(mouseX-xPos, mouseY-yPos);
+    }
+
+    bool containsPoint(int x, int y) {
+        return inRectangle(xPos, yPos, TANK_DIM, TANK_DIM, x, y);
     }
 
   private:
@@ -176,13 +191,37 @@ class Tank {
     char leftOrRight;
 };
 
+class Game {
+
+  public:
+    Game() : leftTank('l'), rightTank('r') {
+    }
+
+    void draw() {
+        LCD.Clear();
+        int groundLevel = 10;
+        leftTank.draw(groundLevel);
+        rightTank.draw(groundLevel);
+    }
+
+    bool mouseDown;
+    int mouseX;
+    int mouseY;
+
+  private:
+    Tank leftTank;
+    Tank rightTank;
+};
+
 int main() {
-    Menu menu;
     double t = TimeNow();
+    Game game;
+    bool shouldPlay = false;
     while (true) {
-        menu.mouseDown = LCD.Touch(&menu.mouseX, &menu.mouseY);
+        game.mouseDown = LCD.Touch(&game.mouseX, &game.mouseY);
         double newT = TimeNow();
-        menu.update(t - newT);
+        // shouldPlay = game.update(t - newT);
+        game.draw();
         t = newT;
     }
     return 0;

@@ -41,3 +41,7 @@
 game
 
 result
+compile_commands.json
+.cache
+.vscode
+.direnv
