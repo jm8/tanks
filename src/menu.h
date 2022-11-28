@@ -1,11 +1,10 @@
 #pragma once
+#include "src/gamestate.h"
 #include <string>
 #include <vector>
 
-class Menu {
+class Menu : public GameState {
   public:
-    int mouseX, mouseY;
-    bool mouseDown;
     bool mouseWasDown = false;
     bool mousePressed;
 
@@ -16,10 +15,8 @@ class Menu {
         STATE_CREDITS,
     } state = STATE_MAIN_MENU;
 
-    // Draws the menu (called as often as possible)
-    // dt Time elapsed since last time update was called (in seconds)
-    // returns true if it should play the game
-    bool update(double dt);
+    void update(double dt);
+    void draw();
 
   private:
     const char *name = "TANKS";

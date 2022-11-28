@@ -117,13 +117,14 @@ class Game {
 
 int main() {
     double t = TimeNow();
-    Menu menu;
+    GameState *gameState;
+    gameState = new Menu();
     bool shouldPlay = false;
     while (true) {
-        menu.mouseDown = LCD.Touch(&menu.mouseX, &menu.mouseY);
+        gameState->mouseDown = LCD.Touch(&gameState->mouseX, &gameState->mouseY);
         double newT = TimeNow();
-        shouldPlay = menu.update(t - newT);
-        // game.draw();
+        gameState->update(t - newT);
+        gameState->draw();
         t = newT;
     }
     return 0;

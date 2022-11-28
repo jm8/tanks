@@ -1,6 +1,7 @@
 #include "src/menu.h"
 #include "src/common.h"
 #include <FEHLCD.h>
+#include <iostream>
 
 using namespace std;
 
@@ -22,9 +23,13 @@ const vector<string> CREDITS{
     "Dennis Zhitenev",
 };
 
-bool Menu::update(double dt) {
+void Menu::update(double dt) {
     mousePressed = mouseDown && !mouseWasDown;
     mouseWasDown = mouseDown;
+}
+
+void Menu::draw() {
+    cout << mouseX << endl;
     LCD.Clear(rgb(0.9, 0.9, 0.9));
     LCD.SetFontColor(rgb(0, 0, 0));
     switch (state) {
@@ -34,7 +39,6 @@ bool Menu::update(double dt) {
         int buttonSpace = buttonHeight + 8;
         if (button("Play", center(buttonWidth, LCD_WIDTH),
                    topButton + buttonSpace * 0, buttonWidth, buttonHeight)) {
-            return true;
         };
         if (button("Statistics", center(buttonWidth, LCD_WIDTH),
                    topButton + buttonSpace * 1, buttonWidth, buttonHeight)) {
@@ -77,8 +81,6 @@ bool Menu::update(double dt) {
             state = STATE_MAIN_MENU;
         }
     }
-
-    return false;
 }
 
 void Menu::writeStrings(vector<string> strings) {
