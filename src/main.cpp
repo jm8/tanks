@@ -49,6 +49,8 @@ int randBetween(int low, int high) {
 const int LCD_WIDTH = 320;
 const int LCD_HEIGHT = 240;
 const int TANK_DIM = 14;
+const int CASTLE_HEIGHT = 49;
+const int CASTLE_WIDTH = 25;
 
 // Returns the x coordinate of the left position needed to center
 // something of width size in something of width max_size. (also works with y
@@ -205,6 +207,22 @@ class Tank {
     FEHImage tankImg;
 };
 
+
+class Castle {
+    public:
+    Castle() {
+        castleImg.Open("icons/castle.pic");
+        //castleImg.Close();
+    }
+
+    void draw(int groundLevel) {
+        castleImg.Draw((LCD_WIDTH-CASTLE_WIDTH)/2, groundLevel-CASTLE_HEIGHT);
+    }
+
+    private:
+    FEHImage castleImg;
+};
+
 class Game {
 
   public:
@@ -219,14 +237,16 @@ class Game {
         leftTank.draw(leftGroundLevel);
 
         LCD.SetFontColor(groundColor);
-        LCD.FillRectangle(0, leftGroundLevel, LCD_WIDTH / 2,
+        LCD.FillRectangle(0, leftGroundLevel, groundDipLocation,
                           LCD_HEIGHT - leftGroundLevel);
 
         rightTank.draw(rightGroundLevel);
 
         LCD.SetFontColor(groundColor);
-        LCD.FillRectangle(LCD_WIDTH / 2, rightGroundLevel, LCD_WIDTH / 2,
+        LCD.FillRectangle(groundDipLocation, rightGroundLevel, LCD_WIDTH - groundDipLocation,
                           LCD_HEIGHT - rightGroundLevel);
+
+        castle.draw(leftGroundLevel);
     }
 
     bool mouseDown;
@@ -236,15 +256,14 @@ class Game {
   private:
     Tank leftTank;
     Tank rightTank;
+    Castle castle;
     int leftGroundLevel;
     int rightGroundLevel;
 
     unsigned int groundColor = 0x705301;
+    int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
 };
 
-// class Castle {
-//     public:
-// }
 
 int main() {
     double t = TimeNow();
