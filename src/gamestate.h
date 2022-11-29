@@ -1,3 +1,5 @@
+#pragma once
+
 class GameState {
 public:
     int mouseX, mouseY;

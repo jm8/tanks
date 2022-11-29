@@ -1,8 +1,8 @@
 #pragma once
 #include <FEHRandom.h>
-#include <common.h>
-#include <tank.h>
-#include <castle.h>
+#include "common.h"
+#include "tank.h"
+#include "castle.h"
 
 using namespace std;
 

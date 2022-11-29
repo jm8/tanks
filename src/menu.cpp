@@ -1,5 +1,6 @@
 #include "src/menu.h"
 #include "src/common.h"
+#include "game.h"
 #include <FEHLCD.h>
 #include <iostream>
 
@@ -39,6 +40,7 @@ void Menu::draw() {
         int buttonSpace = buttonHeight + 8;
         if (button("Play", center(buttonWidth, LCD_WIDTH),
                    topButton + buttonSpace * 0, buttonWidth, buttonHeight)) {
+            
         };
         if (button("Statistics", center(buttonWidth, LCD_WIDTH),
                    topButton + buttonSpace * 1, buttonWidth, buttonHeight)) {
