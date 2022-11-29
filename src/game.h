@@ -1,8 +1,10 @@
 #pragma once
-#include <FEHRandom.h>
-#include "common.h"
-#include "tank.h"
 #include "castle.h"
+#include "common.h"
+#include "gamestate.h"
+#include "tank.h"
+#include "vector.h"
+#include <FEHRandom.h>
 
 using namespace std;
 
@@ -10,8 +12,14 @@ class Game : public GameState {
 
   public:
     Game() : leftTank('l'), rightTank('r') {
+        currentTank = &leftTank;
         rightGroundLevel = LCD_HEIGHT - 16;
         leftGroundLevel = randBetween(LCD_HEIGHT / 2, rightGroundLevel - 25);
+    }
+
+    SwitchStateAction update(double dt) {
+
+      return SWITCH_STATE_STAY;
     }
 
     void draw() {
@@ -31,19 +39,16 @@ class Game : public GameState {
                           LCD_HEIGHT - rightGroundLevel);
 
         castle.draw(leftGroundLevel);
-    }
 
-    SwitchStateAction update(double dt) {
-      return SWITCH_STATE_STAY;
+        auto [dx, dy] = currentTank->getVectorTo(mouseX, mouseY);
+        Vector vector(currentTank->xPos, currentTank->yPos, dx, dy);
+        vector.draw();
     }
-
-    bool mouseDown;
-    int mouseX;
-    int mouseY;
 
   private:
     Tank leftTank;
     Tank rightTank;
+    Tank *currentTank;
     Castle castle;
     int leftGroundLevel;
     int rightGroundLevel;

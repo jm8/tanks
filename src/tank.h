@@ -1,8 +1,8 @@
 #pragma once
 #include "common.h"
+#include <FEHImages.h>
 #include <iostream>
 #include <utility>
-#include <FEHImages.h>
 
 using namespace std;
 
@@ -22,7 +22,8 @@ class Tank {
     }
 
     void draw(int groundLevel) {
-        yPos = groundLevel - TANK_DIM; // should probably be added to the constructor
+        yPos = groundLevel -
+               TANK_DIM; // should probably be added to the constructor
 
         if (leftOrRight == 'l') {
             tankImg.Open("icons/left tank.pic");
@@ -42,8 +43,9 @@ class Tank {
         return inRectangle(xPos, yPos, TANK_DIM, TANK_DIM, x, y);
     }
 
-  private:
     int xPos, yPos;
     char leftOrRight;
+
+  private:
     FEHImage tankImg;
 };
