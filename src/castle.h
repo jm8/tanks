@@ -6,16 +6,22 @@ using namespace std;
 
 class Castle {
   public:
-    Castle() {
+    Castle(int groundLevel) {
         castleImg.Open("icons/castle.pic");
+        xPos = (LCD_WIDTH - CASTLE_WIDTH) / 2;
+        yPos = groundLevel - CASTLE_HEIGHT;
         // castleImg.Close();
     }
 
-    void draw(int groundLevel) {
-        castleImg.Draw((LCD_WIDTH - CASTLE_WIDTH) / 2,
-                       groundLevel - CASTLE_HEIGHT);
+    void draw() {
+        castleImg.Draw(xPos, yPos);
+    }
+
+    bool containsPoint(int x, int y) {
+        return inRectangle(xPos, yPos, CASTLE_WIDTH, CASTLE_HEIGHT, x, y);
     }
 
   private:
-    FEHImage castleImg;
+	int xPos, yPos;
+	FEHImage castleImg;
 };

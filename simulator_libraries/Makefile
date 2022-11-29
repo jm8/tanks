@@ -1,4 +1,4 @@
-CC = g++
+CC = g++ -std=c++20
 CPPFLAGS = -MMD -MP -Os -DOBJC_OLD_DISPATCH_PROTOTYPES -g
 IGNORED_WARNINGS = -w
 INC_DIRS = -I. -I..

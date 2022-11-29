@@ -4,6 +4,8 @@
 #include "gamestate.h"
 #include "tank.h"
 #include "vector.h"
+#include "projectile.h"
+#include <optional>
 #include <FEHRandom.h>
 
 using namespace std;
@@ -11,13 +13,17 @@ using namespace std;
 class Game : public GameState {
 
   public:
-    Game() : leftTank('l'), rightTank('r') {
-        currentTank = &leftTank;
-        rightGroundLevel = LCD_HEIGHT - 16;
-        leftGroundLevel = randBetween(LCD_HEIGHT / 2, rightGroundLevel - 25);
-    }
 
     SwitchStateAction update(double dt) {
+      vector = currentTank->getVectorTo(mouseX, mouseY);
+
+      if (mouseJustPressed) {
+          projectile = make_optional<Projectile>(vector.x, vector.y, vector.dx, vector.dy, 3);
+      }
+
+      if (projectile) {
+          projectile->update(9.8, dt);
+      }
 
       return SWITCH_STATE_STAY;
     }
@@ -25,34 +31,38 @@ class Game : public GameState {
     void draw() {
         LCD.Clear(0x05214d);
 
-        leftTank.draw(leftGroundLevel);
+        leftTank.draw();
 
         LCD.SetFontColor(groundColor);
         LCD.FillRectangle(0, leftGroundLevel, groundDipLocation,
                           LCD_HEIGHT - leftGroundLevel);
 
-        rightTank.draw(rightGroundLevel);
+        rightTank.draw();
 
         LCD.SetFontColor(groundColor);
         LCD.FillRectangle(groundDipLocation, rightGroundLevel,
                           LCD_WIDTH - groundDipLocation,
                           LCD_HEIGHT - rightGroundLevel);
 
-        castle.draw(leftGroundLevel);
+        castle.draw();
 
-        auto [dx, dy] = currentTank->getVectorTo(mouseX, mouseY);
-        Vector vector(currentTank->xPos, currentTank->yPos, dx, dy);
         vector.draw();
+
+        if (projectile) {
+            projectile->draw();
+        }
     }
 
   private:
-    Tank leftTank;
-    Tank rightTank;
-    Tank *currentTank;
-    Castle castle;
-    int leftGroundLevel;
-    int rightGroundLevel;
+    int rightGroundLevel = LCD_HEIGHT - 16;
+    int leftGroundLevel = randBetween(LCD_HEIGHT / 2, rightGroundLevel - 25);
+    Tank leftTank = Tank('l', leftGroundLevel);
+    Tank rightTank = Tank('r', rightGroundLevel);
+    Tank *currentTank = &leftTank;
+    Castle castle = Castle(leftGroundLevel);
+    optional<Projectile> projectile;
+    Vector vector;
 
-    unsigned int groundColor = 0x705301;
-    int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
+    const unsigned int groundColor = 0x705301;
+    const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
 };

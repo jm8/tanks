@@ -14,8 +14,11 @@ int main() {
     GameState *gameState;
     gameState = new Menu();
     bool shouldPlay = false;
+    bool mouseWasPressed = false;
     while (true) {
         gameState->mouseDown = LCD.Touch(&gameState->mouseX, &gameState->mouseY);
+        gameState->mouseJustPressed = gameState->mouseDown && !mouseWasPressed;
+        mouseWasPressed = gameState->mouseDown;
         double newT = TimeNow();
         SwitchStateAction action = gameState->update(t - newT);
         gameState->draw();

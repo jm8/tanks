@@ -5,9 +5,6 @@
 
 class Menu : public GameState {
   public:
-    bool mouseWasDown = false;
-    bool mousePressed;
-
     enum {
         STATE_MAIN_MENU,
         STATE_STATISTICS,

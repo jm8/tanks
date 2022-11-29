@@ -266,20 +266,20 @@ void Swap(int *a, int *b)
 // DrawPixel takes in Proteus coordinates up to (320, 240)
 void FEHLCD::DrawPixel(int x, int y)
 {
-    // Force X and Y to be positive
-    while (x < 0)
-    {
-        x += _width;
-    }
+    // // Force X and Y to be positive
+    // while (x < 0)
+    // {
+    //     x += _width;
+    // }
 
-    while (y < 0)
-    {
-        y += _height;
-    }
+    // while (y < 0)
+    // {
+    //     y += _height;
+    // }
 
-    // Force X and Y to be within the LCD boundaries
-    x = x % _width;
-    y = y % _height;
+    // // Force X and Y to be within the LCD boundaries
+    // x = x % _width;
+    // y = y % _height;
 
     TPixel color = tigrRGB((char)(_forecolor >> 16), (char)(_forecolor >> 8), (char)_forecolor);
     tigrPlot(screen, x, y, color);

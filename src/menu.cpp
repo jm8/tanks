@@ -26,13 +26,10 @@ const vector<string> CREDITS{
 };
 
 SwitchStateAction Menu::update(double dt) {
-    mousePressed = mouseDown && !mouseWasDown;
-    mouseWasDown = mouseDown;
     return playPressed ? SWITCH_STATE_GOTO_GAME : SWITCH_STATE_STAY;
 }
 
 void Menu::draw() {
-    cout << mouseX << endl;
     LCD.Clear(rgb(0.9, 0.9, 0.9));
     LCD.SetFontColor(rgb(0, 0, 0));
     int oldState = state;
@@ -105,5 +102,5 @@ bool Menu::button(const char *text, int x, int y, int width, int height) {
     LCD.FillRectangle(x, y, width, height);
     LCD.SetFontColor(rgb(1, 1, 1));
     LCD.WriteAt(text, x + 8, y + center(16, buttonHeight));
-    return hover && mousePressed;
+    return hover && mouseJustPressed;
 }

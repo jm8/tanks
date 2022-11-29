@@ -10,6 +10,7 @@ class GameState {
 public:
     int mouseX, mouseY;
     bool mouseDown;
+    bool mouseJustPressed;
 
     virtual SwitchStateAction update(double dt) = 0;
     virtual void draw() = 0;
