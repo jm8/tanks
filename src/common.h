@@ -21,3 +21,5 @@ const int LCD_HEIGHT = 240;
 const int TANK_DIM = 14;
 const int CASTLE_HEIGHT = 49;
 const int CASTLE_WIDTH = 25;
+const int VEL_COMP = 2;
+const int GRAVITY = 100;

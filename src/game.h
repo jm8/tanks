@@ -11,7 +11,6 @@
 using namespace std;
 
 const double shot_strength = 2.5;
-const double gravity = 200.0;
 
 class Game : public GameState {
 
@@ -26,7 +25,7 @@ class Game : public GameState {
         }
 
         if (projectile) {
-            projectile->update(gravity, dt);
+            projectile->update(dt);
         }
 
         return SWITCH_STATE_STAY;

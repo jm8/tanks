@@ -1,4 +1,5 @@
 #pragma once
+#include "common.h"
 #include <FEHLCD.h>
 #include <iostream>
 
@@ -15,11 +16,12 @@ class Projectile {
         xVel = vx;
         yVel = vy;
         windStrength = ws;
+        cout << "speed: " << xVel << ", " << yVel << endl;
     }
 
-    void update(double gravity, double dt) {
+    void update(double dt) { // make gravity a constant
         xPos += xVel * dt;
-        yVel += gravity * dt;
+        yVel += GRAVITY * dt;
         yPos += yVel * dt;
     }
 

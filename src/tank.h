@@ -13,11 +13,14 @@ class Tank {
 
         yPos = groundLevel- TANK_DIM;
         leftOrRight = lor;
+
+        int eighth = LCD_WIDTH / 8;
+
         if (lor == 'l') {
-            xPos = LCD_WIDTH / 4; // change to randomized value
+            xPos = randBetween(eighth, 3*eighth);
             tankImg.Open("icons/left tank.pic");
         } else if (lor == 'r') {
-            xPos = 3 * LCD_WIDTH / 4; // change to randomized value
+            xPos = randBetween(5*eighth, 7*eighth);
             tankImg.Open("icons/right tank.pic");
         } else {
             cout << "Error: Tank constructor must take in l or r\n";
