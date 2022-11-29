@@ -18,11 +18,11 @@ class Game : public GameState {
       vector = currentTank->getVectorTo(mouseX, mouseY);
 
       if (mouseJustPressed) {
-          projectile = make_optional<Projectile>(vector.x, vector.y, vector.dx, vector.dy, 3);
+          projectile = make_optional<Projectile>(vector.x, vector.y, vector.dx*2, vector.dy*2, 0);
       }
 
       if (projectile) {
-          projectile->update(9.8, dt);
+          projectile->update(98, dt);
       }
 
       return SWITCH_STATE_STAY;

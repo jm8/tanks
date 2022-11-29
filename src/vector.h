@@ -15,7 +15,6 @@ class Vector {
 
     void draw() {
         LCD.SetFontColor(WHITE);
-        
         drawLine(x, y, x+dx, y+dy);
     }
 

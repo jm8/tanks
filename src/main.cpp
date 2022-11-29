@@ -20,7 +20,7 @@ int main() {
         gameState->mouseJustPressed = gameState->mouseDown && !mouseWasPressed;
         mouseWasPressed = gameState->mouseDown;
         double newT = TimeNow();
-        SwitchStateAction action = gameState->update(t - newT);
+        SwitchStateAction action = gameState->update(newT-t);
         gameState->draw();
         if (action == SWITCH_STATE_GOTO_GAME) {
             delete gameState;

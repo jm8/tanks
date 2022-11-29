@@ -12,14 +12,15 @@ class Projectile {
     Projectile(double x, double y, double vx, double vy, int ws) {
         xPos = x;
         yPos = y;
-        xVel = x;
-        yVel = y;
+        xVel = vx;
+        yVel = vy;
         windStrength = ws;
+        cout << "speed: " << xVel << ", " << yVel << endl;
     }
 
-    void update(double gravity, double dt) {
+    void update(double gravity, double dt) { // make gravity a constant
         xPos += xVel*dt;
-        yVel += gravity*dt;
+        yVel += GRAVITY*dt;
         yPos += yVel*dt;
     }
 
