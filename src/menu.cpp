@@ -1,6 +1,7 @@
 #include "src/menu.h"
 #include "src/common.h"
 #include "game.h"
+#include "gamestate.h"
 #include <FEHLCD.h>
 #include <iostream>
 
@@ -24,23 +25,25 @@ const vector<string> CREDITS{
     "Dennis Zhitenev",
 };
 
-void Menu::update(double dt) {
+SwitchStateAction Menu::update(double dt) {
     mousePressed = mouseDown && !mouseWasDown;
     mouseWasDown = mouseDown;
+    return playPressed ? SWITCH_STATE_GOTO_GAME : SWITCH_STATE_STAY;
 }
 
 void Menu::draw() {
     cout << mouseX << endl;
     LCD.Clear(rgb(0.9, 0.9, 0.9));
     LCD.SetFontColor(rgb(0, 0, 0));
-    switch (state) {
+    int oldState = state;
+    switch (oldState) {
     case STATE_MAIN_MENU: {
         LCD.WriteAt(name, center(strlen(name) * 16, LCD_WIDTH), 32);
         int topButton = 64;
         int buttonSpace = buttonHeight + 8;
         if (button("Play", center(buttonWidth, LCD_WIDTH),
                    topButton + buttonSpace * 0, buttonWidth, buttonHeight)) {
-            
+            playPressed = true;
         };
         if (button("Statistics", center(buttonWidth, LCD_WIDTH),
                    topButton + buttonSpace * 1, buttonWidth, buttonHeight)) {
@@ -74,7 +77,7 @@ void Menu::draw() {
         break;
     }
 
-    if (state != STATE_MAIN_MENU) {
+    if (oldState != STATE_MAIN_MENU) {
         int margin = 16;
         int backButtonWidth = 16 * 6;
         if (button("Back", LCD_WIDTH - backButtonWidth - margin,

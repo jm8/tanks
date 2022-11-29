@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class Game {
+class Game : public GameState {
 
   public:
     Game() : leftTank('l'), rightTank('r') {
@@ -31,6 +31,10 @@ class Game {
                           LCD_HEIGHT - rightGroundLevel);
 
         castle.draw(leftGroundLevel);
+    }
+
+    SwitchStateAction update(double dt) {
+      return SWITCH_STATE_STAY;
     }
 
     bool mouseDown;

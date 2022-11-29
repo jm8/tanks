@@ -15,13 +15,14 @@ class Menu : public GameState {
         STATE_CREDITS,
     } state = STATE_MAIN_MENU;
 
-    void update(double dt);
+    SwitchStateAction update(double dt);
     void draw();
 
   private:
     const char *name = "TANKS";
     const int buttonWidth = 170;
     const int buttonHeight = 32;
+    bool playPressed = false;
 
     void writeStrings(std::vector<std::string> strings);
 

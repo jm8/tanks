@@ -1,5 +1,6 @@
-#include "src/common.h"
-#include "src/menu.h"
+#include "common.h"
+#include "menu.h"
+#include "game.h"
 #include <FEHUtility.h>
 #include <cmath>
 #include <iostream>
@@ -16,8 +17,12 @@ int main() {
     while (true) {
         gameState->mouseDown = LCD.Touch(&gameState->mouseX, &gameState->mouseY);
         double newT = TimeNow();
-        gameState->update(t - newT);
+        SwitchStateAction action = gameState->update(t - newT);
         gameState->draw();
+        if (action == SWITCH_STATE_GOTO_GAME) {
+            delete gameState;
+            gameState = new Game();
+        }
         t = newT;
     }
     return 0;
