@@ -2,30 +2,34 @@
 #include "castle.h"
 #include "common.h"
 #include "gamestate.h"
+#include "projectile.h"
 #include "tank.h"
 #include "vector.h"
-#include "projectile.h"
-#include <optional>
 #include <FEHRandom.h>
+#include <optional>
 
 using namespace std;
+
+const double shot_strength = 2.5;
+const double gravity = 200.0;
 
 class Game : public GameState {
 
   public:
-
     SwitchStateAction update(double dt) {
-      vector = currentTank->getVectorTo(mouseX, mouseY);
+        vector = currentTank->getVectorTo(mouseX, mouseY);
 
-      if (mouseJustPressed) {
-          projectile = make_optional<Projectile>(vector.x, vector.y, vector.dx, vector.dy, 3);
-      }
+        if (mouseJustPressed) {
+            projectile = make_optional<Projectile>(
+                vector.x, vector.y, vector.dx * shot_strength,
+                vector.dy * shot_strength, 0);
+        }
 
-      if (projectile) {
-          projectile->update(9.8, dt);
-      }
+        if (projectile) {
+            projectile->update(gravity, dt);
+        }
 
-      return SWITCH_STATE_STAY;
+        return SWITCH_STATE_STAY;
     }
 
     void draw() {

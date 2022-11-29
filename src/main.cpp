@@ -1,6 +1,6 @@
 #include "common.h"
-#include "menu.h"
 #include "game.h"
+#include "menu.h"
 #include <FEHUtility.h>
 #include <cmath>
 #include <iostream>
@@ -16,11 +16,12 @@ int main() {
     bool shouldPlay = false;
     bool mouseWasPressed = false;
     while (true) {
-        gameState->mouseDown = LCD.Touch(&gameState->mouseX, &gameState->mouseY);
+        gameState->mouseDown =
+            LCD.Touch(&gameState->mouseX, &gameState->mouseY);
         gameState->mouseJustPressed = gameState->mouseDown && !mouseWasPressed;
         mouseWasPressed = gameState->mouseDown;
         double newT = TimeNow();
-        SwitchStateAction action = gameState->update(t - newT);
+        SwitchStateAction action = gameState->update(newT - t);
         gameState->draw();
         if (action == SWITCH_STATE_GOTO_GAME) {
             delete gameState;
