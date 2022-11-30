@@ -16,6 +16,7 @@ class Tank {
   public:
     Tank(char lor, int groundLevel) {
 
+        health = 3;
         yPos = groundLevel - TANK_DIM;
         leftOrRight = lor;
 
@@ -30,11 +31,27 @@ class Tank {
         } else {
             cout << "Error: Tank constructor must take in l or r\n";
         }
+
+        heartImg.Open("icons/heart.pic");
     }
 
     void draw() {
         tankImg.Draw(xPos, yPos);
-        // tankImg.Close();
+
+        if (leftOrRight == 'l') {
+            for (int i = 0; i < health; i++) {
+                heartImg.Draw(5+i*12, 5);
+            }
+        } else {
+            for (int i = 0; i < health; i++) {
+                heartImg.Draw(LCD_WIDTH-15-i*12, 5);
+            }
+        }
+    }
+
+    // Removes a life and returns if the tank is alive or not
+    bool removeLife() {
+        return --health;
     }
 
     Vector getVectorTo(int mouseX, int mouseY) {
@@ -80,6 +97,7 @@ class Tank {
     }
 
     int xPos, yPos;
-    FEHImage tankImg;
+    FEHImage tankImg, heartImg;
     char leftOrRight;
+    int health;
 };

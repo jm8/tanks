@@ -22,7 +22,7 @@ class Projectile {
         cout << "speed: " << xVel << ", " << yVel << endl;
     }
 
-    void update(double dt) { // make gravity a constant
+    void update(double dt) {
         dt *= TIME_MULTIPLIER;
         xPos += xVel * dt;
         yVel += GRAVITY * dt;
