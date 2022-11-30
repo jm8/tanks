@@ -26,6 +26,9 @@ int main() {
         if (action == SWITCH_STATE_GOTO_GAME) {
             delete gameState;
             gameState = new Game();
+        } else if (action == SWITCH_STATE_GOTO_MENU) {
+            delete gameState;
+            gameState = new Menu();
         }
         t = newT;
     }

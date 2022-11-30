@@ -8,24 +8,29 @@
 
 using namespace std;
 
+enum {
+	RIGHT,
+    LEFT
+};
+
 class Tank {
   public:
-    Tank(char lor, int groundLevel) {
+    Tank(int lor, int groundLevel) {
 
         health = 3;
         yPos = groundLevel - TANK_DIM;
-        leftOrRight = lor;
+		leftOrRight = lor;
 
         int eighth = LCD_WIDTH / 8;
 
-        if (lor == 'l') {
-            xPos = randBetween(eighth, 3 * eighth);
-            tankImg.Open("icons/left tank.pic");
-        } else if (lor == 'r') {
+        if (lor == RIGHT) {
             xPos = randBetween(5 * eighth, 7 * eighth);
             tankImg.Open("icons/right tank.pic");
+        } else if (lor == LEFT) {
+            xPos = randBetween(eighth, 3 * eighth);
+            tankImg.Open("icons/left tank.pic");
         } else {
-            cout << "Error: Tank constructor must take in l or r\n";
+            cout << "Error: Tank constructor must take in LEFT or RIGHT\n";
         }
 
         heartImg.Open("icons/heart.pic");
@@ -34,12 +39,12 @@ class Tank {
     void draw() {
         tankImg.Draw(xPos, yPos);
 
-        if (leftOrRight == 'l') {
+        if (leftOrRight) {
             for (int i = 0; i < health; i++) {
                 heartImg.Draw(5+i*12, 5);
             }
         } else {
-            for (int i = 0; i < health; i++) {
+			for (int i = 0; i < health; i++) {
                 heartImg.Draw(LCD_WIDTH-15-i*12, 5);
             }
         }
@@ -71,7 +76,7 @@ class Tank {
     void drawGunStraight() {
         LCD.SetFontColor(GUN_BODY_COLOR);
         auto [x0, y0] = gunBasePosition();
-        int x1 = x0 + (leftOrRight == 'l' ? 6 : -6);
+        int x1 = x0 + (leftOrRight == LEFT ? 6 : -6);
         int y1 = y0;
         drawLine(x0, y0, x1, y1);
         LCD.SetFontColor(GUN_TIP_COLOR);
@@ -80,7 +85,8 @@ class Tank {
 
   private:
     pair<int, int> gunBasePosition() {
-        return make_pair(xPos + (leftOrRight == 'l' ? 8 : 6), yPos + 3);
+        //return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
+        return make_pair(xPos + 6 + leftOrRight*2, yPos + 3);
     }
 
     pair<int, int> gunTipPosition(int mouseX, int mouseY) {
@@ -94,6 +100,5 @@ class Tank {
 
     int xPos, yPos;
     FEHImage tankImg, heartImg;
-    char leftOrRight;
-    int health;
+    int health, leftOrRight;
 };

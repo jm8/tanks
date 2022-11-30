@@ -29,7 +29,7 @@ class Game : public GameState {
                 swapTurn();
             } else if (otherTank->containsPoint(projectile->xPos, projectile->yPos)) {
                 if (!otherTank->removeLife()) {
-                    cout << "Game Over" << endl;
+                    return SWITCH_STATE_GOTO_MENU; // TODO: add win screen state
                 } else {
                     swapTurn();
                 }
@@ -70,8 +70,8 @@ class Game : public GameState {
   private:
     int rightGroundLevel = LCD_HEIGHT - 16;
     int leftGroundLevel = randBetween(LCD_HEIGHT / 2, rightGroundLevel - 25);
-    Tank leftTank = Tank('l', leftGroundLevel);
-    Tank rightTank = Tank('r', rightGroundLevel);
+    Tank leftTank = Tank(LEFT, leftGroundLevel);
+    Tank rightTank = Tank(RIGHT, rightGroundLevel);
     Tank *currentTank = &leftTank;
     Tank *otherTank = &rightTank;
     Castle castle = Castle(leftGroundLevel);
