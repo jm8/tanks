@@ -10,18 +10,16 @@
 
 using namespace std;
 
-const double shot_strength = 2.5;
-
 class Game : public GameState {
 
   public:
     SwitchStateAction update(double dt) {
         vector = currentTank->getVectorTo(mouseX, mouseY);
 
-        if (mouseJustPressed) {
+        if (!projectile && mouseJustPressed) {
             projectile = make_optional<Projectile>(
-                vector.x, vector.y, vector.dx * shot_strength,
-                vector.dy * shot_strength, 0);
+                vector.x, vector.y, vector.dx * SHOT_STRENGTH,
+                vector.dy * SHOT_STRENGTH, 0);
         }
 
         if (projectile) {
@@ -49,7 +47,8 @@ class Game : public GameState {
 
         castle.draw();
 
-        vector.draw();
+        if (!projectile)
+            vector.draw();
 
         if (projectile) {
             projectile->draw();

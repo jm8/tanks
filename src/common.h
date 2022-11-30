@@ -22,4 +22,6 @@ const int TANK_DIM = 14;
 const int CASTLE_HEIGHT = 49;
 const int CASTLE_WIDTH = 25;
 const int VEL_COMP = 2;
-const int GRAVITY = 100;
+const int GRAVITY = 125;
+const double SHOT_STRENGTH = 2.5;
+const double TIME_MULTIPLIER = 1.5;

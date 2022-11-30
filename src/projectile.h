@@ -20,12 +20,14 @@ class Projectile {
     }
 
     void update(double dt) { // make gravity a constant
+        dt *= TIME_MULTIPLIER;
         xPos += xVel * dt;
         yVel += GRAVITY * dt;
         yPos += yVel * dt;
     }
 
     void draw() {
+        LCD.SetFontColor(WHITE);
         LCD.FillCircle(xPos, yPos, 2);
     }
 
