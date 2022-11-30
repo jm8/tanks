@@ -33,4 +33,4 @@ const double TIME_MULTIPLIER = 1.5;
 const unsigned int SKY_COLOR = 0x13254f;
 const unsigned int GUN_BODY_COLOR = 0x817e5b;
 const unsigned int GUN_TIP_COLOR = 0xbab37c;
-const unsigned int GROUND_COLOR = 7367759;
+const unsigned int GROUND_COLOR = 0x484735;
