@@ -1,4 +1,5 @@
 #pragma once
+#include "LCDColors.h"
 #include "castle.h"
 #include "common.h"
 #include "gamestate.h"
@@ -35,13 +36,13 @@ class Game : public GameState {
     }
 
     void draw() {
-        LCD.Clear(0x05214d);
+        LCD.Clear(SKY_COLOR);
 
-        LCD.SetFontColor(groundColor);
+        LCD.SetFontColor(GROUND_COLOR);
         LCD.FillRectangle(0, leftGroundLevel, groundDipLocation,
                           LCD_HEIGHT - leftGroundLevel);
 
-        LCD.SetFontColor(groundColor);
+        LCD.SetFontColor(GROUND_COLOR);
         LCD.FillRectangle(groundDipLocation, rightGroundLevel,
                           LCD_WIDTH - groundDipLocation,
                           LCD_HEIGHT - rightGroundLevel);
@@ -73,6 +74,5 @@ class Game : public GameState {
     optional<Projectile> projectile;
     Vector vector;
 
-    const unsigned int groundColor = 0x705301;
     const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
 };
