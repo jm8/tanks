@@ -16,6 +16,8 @@ int randBetween(int low, int high);
 // coordinates)
 int center(int size, int max_size);
 
+void drawLine(int x0, int y0, int x1, int y1);
+
 const int LCD_WIDTH = 320;
 const int LCD_HEIGHT = 240;
 const int TANK_DIM = 14;

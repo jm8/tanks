@@ -24,6 +24,9 @@ class Game : public GameState {
 
         if (projectile) {
             projectile->update(dt);
+            if (projectile->shouldDelete()) {
+                projectile.reset();
+            }
         }
 
         return SWITCH_STATE_STAY;
@@ -32,18 +35,23 @@ class Game : public GameState {
     void draw() {
         LCD.Clear(0x05214d);
 
-        leftTank.draw();
-
         LCD.SetFontColor(groundColor);
         LCD.FillRectangle(0, leftGroundLevel, groundDipLocation,
                           LCD_HEIGHT - leftGroundLevel);
-
-        rightTank.draw();
 
         LCD.SetFontColor(groundColor);
         LCD.FillRectangle(groundDipLocation, rightGroundLevel,
                           LCD_WIDTH - groundDipLocation,
                           LCD_HEIGHT - rightGroundLevel);
+
+        for (Tank *tank : {&leftTank, &rightTank}) {
+            tank->draw();
+            if (tank == currentTank) {
+                tank->drawGunPointing(mouseX, mouseY);
+            } else {
+                tank->drawGunStraight();
+            }
+        }
 
         castle.draw();
 

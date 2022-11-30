@@ -1,7 +1,10 @@
 #pragma once
 #include "common.h"
 #include <FEHLCD.h>
+#include <cmath>
 #include <iostream>
+#include <math.h>
+#include <utility>
 
 using namespace std;
 
@@ -24,6 +27,13 @@ class Projectile {
         xPos += xVel * dt;
         yVel += GRAVITY * dt;
         yPos += yVel * dt;
+    }
+
+    bool shouldDelete() {
+        if (yPos > LCD_HEIGHT) {
+            return true;
+        }
+        return false;
     }
 
     void draw() {

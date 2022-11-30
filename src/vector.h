@@ -1,49 +1,40 @@
 #pragma once
-#include <utility>
-#include <iostream>
+#include "common.h"
 #include <FEHLCD.h>
+#include <cmath>
+#include <iostream>
+#include <utility>
 using namespace std;
+
 class Vector {
   public:
+    Vector() {
+    }
 
-    Vector() {}
-    
     // Creates a vector origin (x, y) that goes right by dx and up by dy
     Vector(double x, double y, double dx, double dy)
         : x(x), y(y), dx(dx), dy(dy) {
     }
 
+    double length() {
+        return sqrt(dx * dx + dy * dy);
+    }
+
     void draw() {
         LCD.SetFontColor(WHITE);
-        drawLine(x, y, x+dx, y+dy);
+        // skip a few pixels when drawing
+        int skiplength = 4;
+        double l = length();
+        double xn = dx / l;
+        double yn = dy / l;
+        int x0 = x + xn * skiplength;
+        int y0 = y + yn * skiplength;
+        int x1 = x + dx;
+        int y1 = y + dy;
+        drawLine(x0, y0, x1, y1);
     }
 
-private:
-    void drawLine(int x0, int y0, int x1, int y1) {
-        int dx = abs(x1 - x0);
-        int sx = x0 < x1 ? 1 : -1;
-        int dy = -abs(y1 - y0);
-        int sy = y0 < y1 ? 1 : -1;
-        int error = dx + dy;
-        
-        // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-        while (true) {
-            LCD.DrawPixel(x0, y0);
-            if (x0 == x1 && y0 == y1) break;
-            int e2 = 2 * error;
-            if (e2 >= dy) {
-                if (x0 == x1) break;
-                error = error + dy;
-                x0 = x0 + sx;
-            }
-            if (e2 <= dx) {
-                if (y0 == y1) break;
-                error = error + dx;
-                y0 = y0 + sy;
-            }
-        }
-    }
-
+  private:
   public:
     double x, y;
     double dx, dy;
