@@ -1,7 +1,7 @@
 #include "src/menu.h"
-#include "src/common.h"
 #include "game.h"
 #include "gamestate.h"
+#include "src/common.h"
 #include <FEHLCD.h>
 #include <iostream>
 
@@ -30,8 +30,8 @@ SwitchStateAction Menu::update(double dt) {
 }
 
 void Menu::draw() {
-    LCD.Clear(rgb(0.9, 0.9, 0.9));
-    LCD.SetFontColor(rgb(0, 0, 0));
+    LCD.Clear(SKY_COLOR);
+    LCD.SetFontColor(WHITE);
     int oldState = state;
     switch (oldState) {
     case STATE_MAIN_MENU: {
@@ -95,12 +95,12 @@ void Menu::writeStrings(vector<string> strings) {
 bool Menu::button(const char *text, int x, int y, int width, int height) {
     bool hover = inRectangle(x, y, width, height, mouseX, mouseY);
     if (hover) {
-        LCD.SetFontColor(rgb(.4, .4, .9));
+        LCD.SetFontColor(GUN_TIP_COLOR);
     } else {
-        LCD.SetFontColor(rgb(.2, .2, .9));
+        LCD.SetFontColor(GUN_BODY_COLOR);
     }
     LCD.FillRectangle(x, y, width, height);
-    LCD.SetFontColor(rgb(1, 1, 1));
+    LCD.SetFontColor(WHITE);
     LCD.WriteAt(text, x + 8, y + center(16, buttonHeight));
     return hover && mouseJustPressed;
 }

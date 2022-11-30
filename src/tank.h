@@ -8,10 +8,6 @@
 
 using namespace std;
 
-const unsigned int GUN_BODY_COLOR = 0x817e5b;
-const unsigned int GUN_TIP_COLOR = 0xbab37c;
-const int GUN_LENGTH = 6;
-
 class Tank {
   public:
     Tank(char lor, int groundLevel) {
