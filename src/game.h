@@ -25,10 +25,14 @@ class Game : public GameState {
 
         if (projectile) {
             projectile->update(dt);
-            if (projectile->shouldDelete()) {
-                projectile.reset();
-                swap(currentTank, otherTank);
-                vector = currentTank->getVectorTo(mouseX, mouseY);
+            if (projectile->shouldDelete() || castle.containsPoint(projectile->xPos, projectile->yPos)) {
+                swapTurn();
+            } else if (otherTank->containsPoint(projectile->xPos, projectile->yPos)) {
+                if (!otherTank->removeLife()) {
+                    cout << "Game Over" << endl;
+                } else {
+                    swapTurn();
+                }
             }
         }
 
@@ -75,4 +79,10 @@ class Game : public GameState {
     Vector vector;
 
     const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
+
+    void swapTurn() {
+        projectile.reset();
+        swap(currentTank, otherTank);
+        vector = currentTank->getVectorTo(mouseX, mouseY);
+    }
 };

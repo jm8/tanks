@@ -19,7 +19,6 @@ class Projectile {
         xVel = vx;
         yVel = vy;
         windStrength = ws;
-        cout << "speed: " << xVel << ", " << yVel << endl;
     }
 
     void update(double dt) {
@@ -30,10 +29,11 @@ class Projectile {
     }
 
     bool shouldDelete() {
-        if (yPos > LCD_HEIGHT) {
+        if (yPos > LCD_HEIGHT || xPos < 0 || xPos > LCD_WIDTH) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     void draw() {
