@@ -26,6 +26,8 @@ class Game : public GameState {
             projectile->update(dt);
             if (projectile->shouldDelete()) {
                 projectile.reset();
+                swap(currentTank, otherTank);
+                vector = currentTank->getVectorTo(mouseX, mouseY);
             }
         }
 
@@ -44,14 +46,11 @@ class Game : public GameState {
                           LCD_WIDTH - groundDipLocation,
                           LCD_HEIGHT - rightGroundLevel);
 
-        for (Tank *tank : {&leftTank, &rightTank}) {
-            tank->draw();
-            if (tank == currentTank) {
-                tank->drawGunPointing(mouseX, mouseY);
-            } else {
-                tank->drawGunStraight();
-            }
-        }
+        currentTank->draw();
+        currentTank->drawGunPointing(mouseX, mouseY);
+
+        otherTank->draw();
+        otherTank->drawGunStraight();
 
         castle.draw();
 
@@ -69,6 +68,7 @@ class Game : public GameState {
     Tank leftTank = Tank('l', leftGroundLevel);
     Tank rightTank = Tank('r', rightGroundLevel);
     Tank *currentTank = &leftTank;
+    Tank *otherTank = &rightTank;
     Castle castle = Castle(leftGroundLevel);
     optional<Projectile> projectile;
     Vector vector;

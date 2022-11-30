@@ -20,6 +20,10 @@ class Vector {
         return sqrt(dx * dx + dy * dy);
     }
 
+    double angle() {
+        return atan2(dy, dx);
+    }
+
     void draw() {
         LCD.SetFontColor(WHITE);
         // skip a few pixels when drawing
