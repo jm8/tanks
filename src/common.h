@@ -21,11 +21,16 @@ void drawLine(int x0, int y0, int x1, int y1);
 const int LCD_WIDTH = 320;
 const int LCD_HEIGHT = 240;
 const int TANK_DIM = 14;
+const int GUN_LENGTH = 6;
 const int CASTLE_HEIGHT = 49;
 const int CASTLE_WIDTH = 25;
 const int VEL_COMP = 2;
 const int GRAVITY = 125;
 const double SHOT_STRENGTH = 2.5;
 const double TIME_MULTIPLIER = 1.5;
-const unsigned int GROUND_COLOR = 0x705301;
-const unsigned int SKY_COLOR = 0x05214d;
+
+// colors
+const unsigned int SKY_COLOR = 0x13254f;
+const unsigned int GUN_BODY_COLOR = 0x817e5b;
+const unsigned int GUN_TIP_COLOR = 0xbab37c;
+const unsigned int GROUND_COLOR = 7367759;
