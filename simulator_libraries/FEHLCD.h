@@ -147,6 +147,8 @@ private:
     // int lasty;
 
     static unsigned char fontData[];
+
+    // double screenShakeTime = 0;
 };
 
 namespace FEHIcon

@@ -29,12 +29,16 @@ class Vector {
         // skip a few pixels when drawing
         int skipLength = 4;
         double l = length();
+        if (l < 1) {
+            return;
+        }
         double xn = dx / l;
         double yn = dy / l;
         int x0 = x + xn * skipLength;
         int y0 = y + yn * skipLength;
         int x1 = x + dx;
         int y1 = y + dy;
+
         drawLine(x0, y0, x1, y1);
     }
 

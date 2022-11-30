@@ -23,6 +23,7 @@ class Projectile {
 
     void update(double dt) {
         dt *= TIME_MULTIPLIER;
+        xVel += windStrength * 5 * dt;
         xPos += xVel * dt;
         yVel += GRAVITY * dt;
         yPos += yVel * dt;

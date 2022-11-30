@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <utility>
+#include <FEHUtility.h>
 
 using namespace std;
 
@@ -56,8 +57,16 @@ class Tank {
     }
 
     Vector getVectorTo(int mouseX, int mouseY) {
-        auto [x0, y0] = gunTipPosition(mouseX, mouseY);
-        return Vector(x0, y0, mouseX - x0, mouseY - y0);
+        auto [mx, my] = limitMousePosition(mouseX, mouseY);
+        auto [x0, y0] = gunTipPosition(mx, my);
+
+        Vector result(x0, y0, mx - x0, my - y0);
+
+        if (result.length() > MAX_VECTOR_LENGTH) {
+            result = Vector(x0, y0, (result.dx)/result.length()*MAX_VECTOR_LENGTH, (result.dy)/result.length()*MAX_VECTOR_LENGTH);
+        }
+
+        return result;
     }
 
     bool containsPoint(int x, int y) {
@@ -83,19 +92,41 @@ class Tank {
         LCD.DrawPixel(x1, y1);
     }
 
+    void drawExplosion() {
+        FEHImage explosionImg;
+        explosionImg.Open("icons/explosion.pic");
+        explosionImg.Draw(xPos-5, yPos-5);
+        Sleep(500);
+    }
+
   private:
+    pair<int, int> limitMousePosition(int mouseX, int mouseY) {
+        auto [x0, y0] = gunBasePosition();
+
+        if (leftOrRight == LEFT) {
+            return make_pair(max(mouseX, x0), min(mouseY, y0));
+        } else {
+            return make_pair(min(mouseX, x0), min(mouseY, y0));
+        }
+    }
+
     pair<int, int> gunBasePosition() {
         //return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
         return make_pair(xPos + 6 + leftOrRight*2, yPos + 3);
     }
 
+    pair<int, int> tipPosition;
     pair<int, int> gunTipPosition(int mouseX, int mouseY) {
         auto [x0, y0] = gunBasePosition();
-        int dx = mouseX - x0;
-        int dy = mouseY - y0;
+        auto [mx, my] = limitMousePosition(mouseX, mouseY);
+        int dx = mx - x0;
+        int dy = my - y0;
         double dist = sqrt(dx * dx + dy * dy);
-        return make_pair(x0 + GUN_LENGTH * dx / dist,
-                         y0 + GUN_LENGTH * dy / dist);
+        if (dist > 1) {
+            tipPosition = make_pair(x0 + GUN_LENGTH * dx / dist,
+                            y0 + GUN_LENGTH * dy / dist);
+        }
+        return tipPosition;
     }
 
     int xPos, yPos;

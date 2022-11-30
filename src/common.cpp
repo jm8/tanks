@@ -24,7 +24,8 @@ void drawLine(int x0, int y0, int x1, int y1) {
     int error = dx + dy;
 
     // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-    while (true) {
+    const int MAX_ITERATIONS = 10000;
+    for (int i = 0; i < MAX_ITERATIONS; i++) {
         LCD.DrawPixel(x0, y0);
         if (x0 == x1 && y0 == y1)
             break;
