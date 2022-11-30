@@ -1,4 +1,5 @@
 #pragma once
+#include "LCDColors.h"
 #include "castle.h"
 #include "common.h"
 #include "gamestate.h"
@@ -26,6 +27,8 @@ class Game : public GameState {
             projectile->update(dt);
             if (projectile->shouldDelete()) {
                 projectile.reset();
+                swap(currentTank, otherTank);
+                vector = currentTank->getVectorTo(mouseX, mouseY);
             }
         }
 
@@ -33,25 +36,22 @@ class Game : public GameState {
     }
 
     void draw() {
-        LCD.Clear(0x05214d);
+        LCD.Clear(SKY_COLOR);
 
-        LCD.SetFontColor(groundColor);
+        LCD.SetFontColor(GROUND_COLOR);
         LCD.FillRectangle(0, leftGroundLevel, groundDipLocation,
                           LCD_HEIGHT - leftGroundLevel);
 
-        LCD.SetFontColor(groundColor);
+        LCD.SetFontColor(GROUND_COLOR);
         LCD.FillRectangle(groundDipLocation, rightGroundLevel,
                           LCD_WIDTH - groundDipLocation,
                           LCD_HEIGHT - rightGroundLevel);
 
-        for (Tank *tank : {&leftTank, &rightTank}) {
-            tank->draw();
-            if (tank == currentTank) {
-                tank->drawGunPointing(mouseX, mouseY);
-            } else {
-                tank->drawGunStraight();
-            }
-        }
+        currentTank->draw();
+        currentTank->drawGunPointing(mouseX, mouseY);
+
+        otherTank->draw();
+        otherTank->drawGunStraight();
 
         castle.draw();
 
@@ -69,10 +69,10 @@ class Game : public GameState {
     Tank leftTank = Tank('l', leftGroundLevel);
     Tank rightTank = Tank('r', rightGroundLevel);
     Tank *currentTank = &leftTank;
+    Tank *otherTank = &rightTank;
     Castle castle = Castle(leftGroundLevel);
     optional<Projectile> projectile;
     Vector vector;
 
-    const unsigned int groundColor = 0x705301;
     const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
 };

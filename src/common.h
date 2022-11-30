@@ -27,3 +27,5 @@ const int VEL_COMP = 2;
 const int GRAVITY = 125;
 const double SHOT_STRENGTH = 2.5;
 const double TIME_MULTIPLIER = 1.5;
+const unsigned int GROUND_COLOR = 0x705301;
+const unsigned int SKY_COLOR = 0x05214d;
