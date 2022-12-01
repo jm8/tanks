@@ -90,17 +90,3 @@ void Menu::writeStrings(vector<string> strings) {
         LCD.WriteAt(strings[i].c_str(), 16, 16 + 18 * i);
     }
 }
-
-// Draw a button and returns if it's clicked
-bool Menu::button(const char *text, int x, int y, int width, int height) {
-    bool hover = inRectangle(x, y, width, height, mouseX, mouseY);
-    if (hover) {
-        LCD.SetFontColor(GUN_TIP_COLOR);
-    } else {
-        LCD.SetFontColor(GUN_BODY_COLOR);
-    }
-    LCD.FillRectangle(x, y, width, height);
-    LCD.SetFontColor(WHITE);
-    LCD.WriteAt(text, x + 8, y + center(16, buttonHeight));
-    return hover && mouseJustPressed;
-}

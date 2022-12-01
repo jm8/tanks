@@ -309,40 +309,29 @@ void FEHLCD::DrawVerticalLine(int x, int y1, int y2)
 
 void FEHLCD::DrawLine(int x1, int y1, int x2, int y2)
 {
-    if (x1 == x2) {
-        DrawVerticalLine(x1, y1, y2);
-        return;
-    }
-    if (y1 == y2) {
-        DrawHorizontalLine(y1, x1, x2);
-        return;
-    }
-    // Using a float to be more precise, will cast the end result to an int
-    float slope = ((float) y2 - y1) / ((float) x2 - x1);
+    // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+    int dx = abs(x2 - x1);
+    int sx = x1 < x2 ? 1 : -1;
+    int dy = -abs(y2 - y1);
+    int sy = y1 < y2 ? 1 : -1;
+    int error = dx + dy;
 
-    int xVal, yVal, startX, endX, startY, endY;
-
-    // Makes the lower of the two input X values be the startX, and the higher be the endX
-    startX = (x1 <= x2) ? x1 : x2;
-    endX = (x1 <= x2) ? x2 : x1;
-
-    for (xVal = startX; xVal <= endX; xVal++)
-    {
-        // For lines with a slope > 1, there will sometimes be multiple Y values for the same X value after the pixels
-        // are truncated when casted to ints. These variables and the loop below ensure that all pixels are plotted
-        startY = (int)(slope * (xVal - x1) + y1);
-        endY = (int)(slope * (xVal - x1 + 1) + y1);
-
-        // Make sure to begin at the lower Y value
-        if (endY < startY)
-        {
-            Swap(&startY, &endY);
+    for (int i = 0; i < 1000000; i++) {
+        LCD.DrawPixel(x1, y1);
+        if (x1 == x2 && y1 == y2)
+            break;
+        int e2 = 2 * error;
+        if (e2 >= dy) {
+            if (x1 == x2)
+                break;
+            error = error + dy;
+            x1 = x1 + sx;
         }
-
-        // Draw all of the Y values for a given X value
-        for (yVal = startY; yVal <= endY; yVal++)
-        {
-            DrawPixel(xVal, yVal);
+        if (e2 <= dx) {
+            if (y1 == y2)
+                break;
+            error = error + dx;
+            y1 = y1 + sy;
         }
     }
 }

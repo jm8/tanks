@@ -1,4 +1,5 @@
 #pragma once
+#include "FEHUtility.h"
 #include "common.h"
 #include "vector.h"
 #include <FEHImages.h>
@@ -8,34 +9,64 @@
 
 using namespace std;
 
+enum {
+	RIGHT,
+    LEFT
+};
+
 class Tank {
   public:
-    Tank(char lor, int groundLevel) {
+    Tank(int lor, int groundLevel) {
 
+        health = 3;
         yPos = groundLevel - TANK_DIM;
-        leftOrRight = lor;
+		leftOrRight = lor;
 
         int eighth = LCD_WIDTH / 8;
 
-        if (lor == 'l') {
-            xPos = randBetween(eighth, 3 * eighth);
-            tankImg.Open("icons/left tank.pic");
-        } else if (lor == 'r') {
+        if (lor == RIGHT) {
             xPos = randBetween(5 * eighth, 7 * eighth);
             tankImg.Open("icons/right tank.pic");
+        } else if (lor == LEFT) {
+            xPos = randBetween(eighth, 3 * eighth);
+            tankImg.Open("icons/left tank.pic");
         } else {
-            cout << "Error: Tank constructor must take in l or r\n";
+            cout << "Error: Tank constructor must take in LEFT or RIGHT\n";
         }
+
+        heartImg.Open("icons/heart.pic");
     }
 
     void draw() {
         tankImg.Draw(xPos, yPos);
-        // tankImg.Close();
+
+        if (leftOrRight) {
+            for (int i = 0; i < health; i++) {
+                heartImg.Draw(5+i*12, 5);
+            }
+        } else {
+			for (int i = 0; i < health; i++) {
+                heartImg.Draw(LCD_WIDTH-15-i*12, 5);
+            }
+        }
+    }
+
+    // Removes a life and returns if the tank is alive or not
+    bool removeLife() {
+        return --health;
     }
 
     Vector getVectorTo(int mouseX, int mouseY) {
-        auto [x0, y0] = gunTipPosition(mouseX, mouseY);
-        return Vector(x0, y0, mouseX - x0, mouseY - y0);
+        auto [mx, my] = limitMousePosition(mouseX, mouseY);
+        auto [x0, y0] = gunTipPosition(mx, my);
+
+        Vector result(x0, y0, mx - x0, my - y0);
+
+        if (result.length() > MAX_VECTOR_LENGTH) {
+            result = Vector(x0, y0, (result.dx)/result.length()*MAX_VECTOR_LENGTH, (result.dy)/result.length()*MAX_VECTOR_LENGTH);
+        }
+
+        return result;
     }
 
     bool containsPoint(int x, int y) {
@@ -54,28 +85,51 @@ class Tank {
     void drawGunStraight() {
         LCD.SetFontColor(GUN_BODY_COLOR);
         auto [x0, y0] = gunBasePosition();
-        int x1 = x0 + (leftOrRight == 'l' ? 6 : -6);
+        int x1 = x0 + (leftOrRight == LEFT ? 6 : -6);
         int y1 = y0;
         drawLine(x0, y0, x1, y1);
         LCD.SetFontColor(GUN_TIP_COLOR);
         LCD.DrawPixel(x1, y1);
     }
 
-  private:
-    pair<int, int> gunBasePosition() {
-        return make_pair(xPos + (leftOrRight == 'l' ? 8 : 6), yPos + 3);
+    void drawExplosion() {
+        FEHImage explosionImg;
+        explosionImg.Open("");
+        explosionImg.Draw(xPos, yPos);
+        Sleep(500);
     }
 
+  private:
+    pair<int, int> limitMousePosition(int mouseX, int mouseY) {
+        auto [x0, y0] = gunBasePosition();
+
+        if (leftOrRight == LEFT) {
+            return make_pair(max(mouseX, x0), min(mouseY, y0));
+        } else {
+            return make_pair(min(mouseX, x0), min(mouseY, y0));
+        }
+    }
+
+    pair<int, int> gunBasePosition() {
+        //return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
+        return make_pair(xPos + 6 + leftOrRight*2, yPos + 3);
+    }
+
+    pair<int, int> tipPosition;
     pair<int, int> gunTipPosition(int mouseX, int mouseY) {
         auto [x0, y0] = gunBasePosition();
-        int dx = mouseX - x0;
-        int dy = mouseY - y0;
+        auto [mx, my] = limitMousePosition(mouseX, mouseY);
+        int dx = mx - x0;
+        int dy = my - y0;
         double dist = sqrt(dx * dx + dy * dy);
-        return make_pair(x0 + GUN_LENGTH * dx / dist,
-                         y0 + GUN_LENGTH * dy / dist);
+        if (dist > 1) {
+            tipPosition = make_pair(x0 + GUN_LENGTH * dx / dist,
+                            y0 + GUN_LENGTH * dy / dist);
+        }
+        return tipPosition;
     }
 
     int xPos, yPos;
-    FEHImage tankImg;
-    char leftOrRight;
+    FEHImage tankImg, heartImg;
+    int health, leftOrRight;
 };

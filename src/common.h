@@ -28,6 +28,8 @@ const int VEL_COMP = 2;
 const int GRAVITY = 125;
 const double SHOT_STRENGTH = 2.5;
 const double TIME_MULTIPLIER = 1.5;
+const int CHAR_WIDTH = 12;
+const int MAX_VECTOR_LENGTH = 100;
 
 // colors
 const unsigned int SKY_COLOR = 0x13254f;

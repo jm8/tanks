@@ -18,11 +18,7 @@ class Menu : public GameState {
   private:
     const char *name = "TANKS";
     const int buttonWidth = 170;
-    const int buttonHeight = 32;
     bool playPressed = false;
 
     void writeStrings(std::vector<std::string> strings);
-
-    // Draw a button and returns if it's clicked
-    bool button(const char *text, int x, int y, int width, int height);
 };
