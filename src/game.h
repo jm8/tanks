@@ -6,6 +6,7 @@
 #include "projectile.h"
 #include "tank.h"
 #include "vector.h"
+#include "aimdots.h"
 #include <FEHRandom.h>
 #include <optional>
 
@@ -28,6 +29,7 @@ class Game : public GameState {
             projectile = make_optional<Projectile>(
                 vector.x, vector.y, vector.dx * SHOT_STRENGTH,
                 vector.dy * SHOT_STRENGTH, windStrength);
+            dots.addPoint(currentTank == &leftTank, mouseX, mouseY);
         }
 
         if (projectile) {
@@ -73,6 +75,7 @@ class Game : public GameState {
         LCD.Clear(SKY_COLOR);
 
         drawWindHUD();
+        dots.draw();
 
         LCD.SetFontColor(GROUND_COLOR);
         LCD.FillRectangle(0, leftGroundLevel, groundDipLocation,
@@ -91,11 +94,10 @@ class Game : public GameState {
 
         castle.draw();
 
-        if (!projectile)
-            vector.draw();
-
         if (projectile) {
             projectile->draw();
+        } else {
+            vector.draw();
         }
 
         drawBackButton();
@@ -117,14 +119,13 @@ class Game : public GameState {
     optional<Projectile> projectile;
     Vector vector;
     bool shouldGoBack;
+    AimDots dots;
 
     const int backButtonDim[4] = {10, LCD_HEIGHT - 40, 80, 32};
     const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
 
     void drawBackButton() {
-        bool hover =
-            inRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2],
-                        backButtonDim[3], mouseX, mouseY);
+        bool hover = inRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2], backButtonDim[3], mouseX, mouseY);
         if (hover) {
             LCD.SetFontColor(GUN_TIP_COLOR);
         } else {
