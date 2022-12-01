@@ -28,7 +28,6 @@ const vector<string> CREDITS{
 };
 
 // Switch state if the play button was pressed
-// written by Josh
 SwitchStateAction Menu::update(double dt) {
     return playPressed ? SWITCH_STATE_GOTO_GAME : SWITCH_STATE_STAY;
 }

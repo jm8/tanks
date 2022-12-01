@@ -30,6 +30,5 @@ class Menu : public GameState {
     bool playPressed = false;
 
     // Write a bunch of strings to the screen (for instructions and credits).
-    // written by Josh
     void writeStrings(std::vector<std::string> strings);
 };

@@ -6,29 +6,36 @@
 #include <utility>
 using namespace std;
 
+// A Vector object represents the line used to aim the tank
+// Mostly by Josh
 class Vector {
   public:
+    // Empty constructor to appease the C++ compiler
     Vector() {
     }
 
-    // Creates a vector origin (x, y) that goes right by dx and up by dy
+    // Creates a vector origin (x, y) that goes right by dx and down by dy
+    // By Josh
     Vector(double x, double y, double dx, double dy)
         : x(x), y(y), dx(dx), dy(dy) {
     }
 
+    // Returns the length of the vector
+    // By Josh
     double length() {
         return sqrt(dx * dx + dy * dy);
     }
 
-    double angle() {
-        return atan2(dy, dx);
-    }
-
+    // Draws the vector (a line from (x, y) that goes right
+    // by dx and down by dy)
+    // By Josh
     void draw() {
         LCD.SetFontColor(WHITE);
         // skip a few pixels when drawing
         int skipLength = 4;
         double l = length();
+
+        // Prevents dividing by zero
         if (l < 1) {
             return;
         }

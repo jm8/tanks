@@ -4,7 +4,6 @@
 
 // The return value of GameState::update(), which tells what
 // GameState to switch to
-// written by Josh
 enum SwitchStateAction : int {
     SWITCH_STATE_STAY,
     SWITCH_STATE_GOTO_GAME,
@@ -16,7 +15,6 @@ enum SwitchStateAction : int {
 const int buttonHeight = 32;
 
 // Abstract GameState class
-// written by Josh
 class GameState {
   public:
     // Mouse position and status. Updated by main.
@@ -30,7 +28,7 @@ class GameState {
     virtual void draw() = 0;
 
     // Draw a button and returns if it's clicked
-    // written by Josh
+
     bool button(const char *text, int x, int y, int width, int height) {
         bool hover = inRectangle(x, y, width, height, mouseX, mouseY);
         if (hover) {

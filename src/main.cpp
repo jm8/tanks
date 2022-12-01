@@ -14,7 +14,11 @@
 using namespace std;
 
 int main() {
-    // Load statistics
+
+    // Sets t to the to time of the program starting
+    double t = TimeNow();
+
+    // Sets gameState to the menu
     Statistics statistics;
     statistics.load();
 
@@ -22,11 +26,11 @@ int main() {
     GameState *gameState;
     gameState = new Menu(&statistics);
 
-    // if the mouse was pressed last frame
+    // Initializes shouldPlay and mouseWasPressed
+    bool shouldPlay = false;
     bool mouseWasPressed = false;
 
-    // Current time
-    double t = TimeNow();
+    // Infinite game loop
     while (true) {
         // Update mouse information
         gameState->mouseDown =
