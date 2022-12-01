@@ -29,15 +29,18 @@ class Game : public GameState {
 
         if (projectile) {
             projectile->update(dt);
-            if (projectile->shouldDelete() ||
-                castle.containsPoint(projectile->xPos, projectile->yPos) ||
+            if (projectile->shouldDelete()
+#ifndef CHEAT
+                || castle.containsPoint(projectile->xPos, projectile->yPos) ||
                 inRectangle(0, leftGroundLevel, groundDipLocation,
                             LCD_HEIGHT - leftGroundLevel, projectile->xPos,
                             projectile->yPos) ||
                 inRectangle(groundDipLocation, rightGroundLevel,
                             LCD_WIDTH - groundDipLocation,
                             LCD_HEIGHT - rightGroundLevel, projectile->xPos,
-                            projectile->yPos)) {
+                            projectile->yPos)
+#endif
+            ) {
                 swapTurn();
                 // projectile.reset();
             } else if (otherTank->containsPoint(projectile->xPos,
@@ -117,7 +120,6 @@ class Game : public GameState {
         bool hover =
             inRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2],
                         backButtonDim[3], mouseX, mouseY);
-        cout << mouseX << ", " << mouseY << endl;
         if (hover) {
             LCD.SetFontColor(GUN_TIP_COLOR);
         } else {

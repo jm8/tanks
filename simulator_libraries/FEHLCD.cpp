@@ -1,13 +1,15 @@
 #include "FEHLCD.h"
+#include "FEHRandom.h"
 #include "FEHSD.h"
 #include "FEHUtility.h"
-#include "FEHRandom.h"
 #include "tigr.h"
 #include <iostream>
 
 #define LCD_WIDTH 320
 #define LCD_HEIGHT 240
-#define WINDOW_WIDTH LCD_WIDTH // TODO: Consider changing the actual window width and height to have a border around the "screen"
+#define WINDOW_WIDTH                                                           \
+    LCD_WIDTH // TODO: Consider changing the actual window width and height to
+              // have a border around the "screen"
 #define WINDOW_HEIGHT LCD_HEIGHT
 
 #define CHAR_HEIGHT 17
@@ -118,8 +120,7 @@ FEHLCD LCD;
 Tigr *screen;
 int scale;
 
-FEHLCD::FEHLCD()
-{
+FEHLCD::FEHLCD() {
     Initialize();
 
     _maxlines = 14;
@@ -131,39 +132,36 @@ FEHLCD::FEHLCD()
     _orientation = North;
 }
 
-void FEHLCD::Initialize()
-{
-    if (initialized == false)
-    {
+void FEHLCD::Initialize() {
+    if (initialized == false) {
         initialized = true;
 
         _Initialize();
     }
 }
 
-void FEHLCD::_Initialize()
-{
+void FEHLCD::_Initialize() {
     _width = LCD_WIDTH;
     _height = LCD_HEIGHT;
     _forecolor = WHITE;
     _backcolor = BLACK;
 
-    screen = tigrWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Proteus Simulator", TIGR_FIXED & TIGR_RETINA);
+    screen = tigrWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Proteus Simulator",
+                        TIGR_FIXED & TIGR_RETINA);
 
     Clear();
 
     // FEHLCD::_Initialize() will run at the beginning of the student's program.
-    // Since there is no other init function that the students call at the beginning
-    // of their program, ResetTime() must be called here to initialize the timer
-    // in TimeNow() and similar functions in FEHUtility.
+    // Since there is no other init function that the students call at the
+    // beginning of their program, ResetTime() must be called here to initialize
+    // the timer in TimeNow() and similar functions in FEHUtility.
     ResetTime();
 
     // Also seed the random
     Random.Seed();
 }
 
-bool FEHLCD::Touch(float *x_pos, float *y_pos)
-{
+bool FEHLCD::Touch(float *x_pos, float *y_pos) {
     int x_int, y_int;
     bool touched = Touch(&x_int, &y_int);
     *x_pos = x_int;
@@ -172,8 +170,7 @@ bool FEHLCD::Touch(float *x_pos, float *y_pos)
     return touched;
 }
 
-bool FEHLCD::Touch(int *x_pos, int *y_pos)
-{
+bool FEHLCD::Touch(int *x_pos, int *y_pos) {
     Update();
 
     int mouseButton;
@@ -182,44 +179,36 @@ bool FEHLCD::Touch(int *x_pos, int *y_pos)
     return (mouseButton & 0x01) == 1;
 }
 
-void FEHLCD::ClearBuffer()
-{
+void FEHLCD::ClearBuffer() {
 }
 
-void FEHLCD::PrintImage(int x, int y)
-{
+void FEHLCD::PrintImage(int x, int y) {
 }
 
-void FEHLCD::PrintLogo(int x, int y)
-{
+void FEHLCD::PrintLogo(int x, int y) {
 }
 
-void FEHLCD::SetOrientation(FEHLCDOrientation orientation)
-{
+void FEHLCD::SetOrientation(FEHLCDOrientation orientation) {
     _orientation = orientation;
 }
 
-void FEHLCD::Clear(FEHLCDColor color)
-{
+void FEHLCD::Clear(FEHLCDColor color) {
     unsigned int htmlColor = ConvertFEHColorTo24Bit(color);
     Clear(htmlColor);
 }
 
-void FEHLCD::Clear(unsigned int color)
-{
+void FEHLCD::Clear(unsigned int color) {
     SetBackgroundColor(color);
-     _currentline = 0;
+    _currentline = 0;
     _Clear();
 };
 
-void FEHLCD::Clear()
-{
-     _currentline = 0;
+void FEHLCD::Clear() {
+    _currentline = 0;
     _Clear();
 }
 
-void FEHLCD::Update()
-{
+void FEHLCD::Update() {
     tigrUpdate(screen);
 
     if (tigrClosed(screen)) {
@@ -228,44 +217,38 @@ void FEHLCD::Update()
     }
 }
 
-void FEHLCD::SetFontColor(FEHLCDColor color)
-{
+void FEHLCD::SetFontColor(FEHLCDColor color) {
     unsigned int htmlColor = ConvertFEHColorTo24Bit(color);
     SetFontColor(htmlColor);
 }
 
-void FEHLCD::SetFontColor(unsigned int color)
-{
+void FEHLCD::SetFontColor(unsigned int color) {
     // Currently takes in a 24-bit color as input
     _forecolor = color;
 }
 
-void FEHLCD::SetBackgroundColor(FEHLCDColor color)
-{
+void FEHLCD::SetBackgroundColor(FEHLCDColor color) {
     unsigned int htmlColor = ConvertFEHColorTo24Bit(color);
     SetBackgroundColor(htmlColor);
 }
 
-void FEHLCD::SetBackgroundColor(unsigned int color)
-{
+void FEHLCD::SetBackgroundColor(unsigned int color) {
     // Currently takes in a 24-bit color as input
     _backcolor = color;
 }
 
-void Swap(int *a, int *b)
-{
+void Swap(int *a, int *b) {
     int c = *a;
     *a = *b;
     *b = c;
 }
 
 /*************************
-*   DRAWING FUNCTIONS    *
-*************************/
+ *   DRAWING FUNCTIONS    *
+ *************************/
 
 // DrawPixel takes in Proteus coordinates up to (320, 240)
-void FEHLCD::DrawPixel(int x, int y)
-{
+void FEHLCD::DrawPixel(int x, int y) {
     // // Force X and Y to be positive
     // while (x < 0)
     // {
@@ -281,82 +264,49 @@ void FEHLCD::DrawPixel(int x, int y)
     // x = x % _width;
     // y = y % _height;
 
-    TPixel color = tigrRGB((char)(_forecolor >> 16), (char)(_forecolor >> 8), (char)_forecolor);
+    TPixel color = tigrRGB((char)(_forecolor >> 16), (char)(_forecolor >> 8),
+                           (char)_forecolor);
     tigrPlot(screen, x, y, color);
 }
 
-void FEHLCD::DrawHorizontalLine(int y, int x1, int x2)
-{
+void FEHLCD::DrawHorizontalLine(int y, int x1, int x2) {
     if (x2 < x1) {
         Swap(&x1, &x2);
     }
-    for (int i = x1; i <= x2; i++)
-    {
+    for (int i = x1; i <= x2; i++) {
         DrawPixel(i, y);
     }
 }
 
-void FEHLCD::DrawVerticalLine(int x, int y1, int y2)
-{
+void FEHLCD::DrawVerticalLine(int x, int y1, int y2) {
     if (y2 < y1) {
         Swap(&y1, &y2);
     }
-    for (int i = y1; i <= y2; i++)
-    {
+    for (int i = y1; i <= y2; i++) {
         DrawPixel(x, i);
     }
 }
 
-void FEHLCD::DrawLine(int x1, int y1, int x2, int y2)
-{
-    // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-    int dx = abs(x2 - x1);
-    int sx = x1 < x2 ? 1 : -1;
-    int dy = -abs(y2 - y1);
-    int sy = y1 < y2 ? 1 : -1;
-    int error = dx + dy;
-
-    for (int i = 0; i < 1000000; i++) {
-        LCD.DrawPixel(x1, y1);
-        if (x1 == x2 && y1 == y2)
-            break;
-        int e2 = 2 * error;
-        if (e2 >= dy) {
-            if (x1 == x2)
-                break;
-            error = error + dy;
-            x1 = x1 + sx;
-        }
-        if (e2 <= dx) {
-            if (y1 == y2)
-                break;
-            error = error + dx;
-            y1 = y1 + sy;
-        }
-    }
+void FEHLCD::DrawLine(int x1, int y1, int x2, int y2) {
+    std::cout << "Don't use FEHLCD::DrawLine";
 }
 
-void FEHLCD::DrawRectangle(int x, int y, int width, int height)
-{
+void FEHLCD::DrawRectangle(int x, int y, int width, int height) {
     DrawHorizontalLine(y, x, x + width - 1);
     DrawHorizontalLine(y + height - 1, x, x + width - 1);
     DrawVerticalLine(x, y, y + height - 1);
     DrawVerticalLine(x + width - 1, y, y + height - 1);
 }
 
-void FEHLCD::FillRectangle(int x, int y, int width, int height)
-{
-    for (int currentX = x; currentX < x + width; currentX++)
-    {
-        for (int currentY = y; currentY < y + height; currentY++)
-        {
+void FEHLCD::FillRectangle(int x, int y, int width, int height) {
+    for (int currentX = x; currentX < x + width; currentX++) {
+        for (int currentY = y; currentY < y + height; currentY++) {
             DrawPixel(currentX, currentY);
         }
     }
 }
 
-void FEHLCD::DrawCircle(int x0, int y0, int r)
-{
+void FEHLCD::DrawCircle(int x0, int y0, int r) {
     // This alogorithm is from wikipedia
     // It's called the "midpoint circle algorithm"
     // or the "Bresenham's circle algorithm"
@@ -373,10 +323,8 @@ void FEHLCD::DrawCircle(int x0, int y0, int r)
     DrawPixel(x0 + r, y0);
     DrawPixel(x0 - r, y0);
 
-    while (x < y)
-    {
-        if (f >= 0)
-        {
+    while (x < y) {
+        if (f >= 0) {
             y--;
             ddF_y += 2;
             f += ddF_y;
@@ -395,8 +343,7 @@ void FEHLCD::DrawCircle(int x0, int y0, int r)
     }
 }
 
-void FEHLCD::FillCircle(int x0, int y0, int r)
-{
+void FEHLCD::FillCircle(int x0, int y0, int r) {
     // This algorithm is a variant on DrawCircle.
     // Rather than draw the points around the circle,
     // We connect them with a series of lines
@@ -411,10 +358,8 @@ void FEHLCD::FillCircle(int x0, int y0, int r)
     DrawVerticalLine(x0, y0 - r, y0 + r);
     DrawHorizontalLine(y0, x0 - r, x0 + r);
 
-    while (x < y)
-    {
-        if (f >= 0)
-        {
+    while (x < y) {
+        if (f >= 0) {
             y--;
             ddF_y += 2;
             f += ddF_y;
@@ -430,26 +375,22 @@ void FEHLCD::FillCircle(int x0, int y0, int r)
 }
 
 // Write information at a specific Pixel on the screen
-void FEHLCD::WriteAt(const char *str, int x, int y)
-{
+void FEHLCD::WriteAt(const char *str, int x, int y) {
     int i = 0;
-    while (str[i] != '\0')
-    {
+    while (str[i] != '\0') {
         WriteCharAt(x, y, str[i]);
         x += CHAR_WIDTH;
         i++;
     }
 }
 
-void FEHLCD::WriteAt(int i, int x, int y)
-{
+void FEHLCD::WriteAt(int i, int x, int y) {
     char num[50];
     sprintf(num, "%d", i);
     WriteAt(num, x, y);
 }
 
-void FEHLCD::WriteAt(float f, int x, int y)
-{
+void FEHLCD::WriteAt(float f, int x, int y) {
     char num[50];
     int d, r;
     d = (int)f;
@@ -463,32 +404,25 @@ void FEHLCD::WriteAt(float f, int x, int y)
     WriteAt(num, x, y);
 }
 
-void FEHLCD::WriteAt(double d, int x, int y)
-{
+void FEHLCD::WriteAt(double d, int x, int y) {
     WriteAt((float)d, x, y);
 }
 
-void FEHLCD::WriteAt(bool b, int x, int y)
-{
-    if (b)
-    {
+void FEHLCD::WriteAt(bool b, int x, int y) {
+    if (b) {
         WriteAt("true", x, y);
-    }
-    else
-    {
+    } else {
         WriteAt("false", x, y);
     }
 }
 
-void FEHLCD::WriteAt(char c, int x, int y)
-{
+void FEHLCD::WriteAt(char c, int x, int y) {
     WriteCharAt(x, y, c);
 }
 
 // Write to Row, Column
 
-void FEHLCD::WriteRC(const char *str, int row, int col)
-{
+void FEHLCD::WriteRC(const char *str, int row, int col) {
     int x, y;
 
     y = row * 17;
@@ -496,8 +430,7 @@ void FEHLCD::WriteRC(const char *str, int row, int col)
     WriteAt(str, x, y);
 }
 
-void FEHLCD::WriteRC(int i, int row, int col)
-{
+void FEHLCD::WriteRC(int i, int row, int col) {
     int x, y;
 
     y = row * 17;
@@ -505,8 +438,7 @@ void FEHLCD::WriteRC(int i, int row, int col)
     WriteAt(i, x, y);
 }
 
-void FEHLCD::WriteRC(float f, int row, int col)
-{
+void FEHLCD::WriteRC(float f, int row, int col) {
     int x, y;
 
     y = row * 17;
@@ -514,8 +446,7 @@ void FEHLCD::WriteRC(float f, int row, int col)
     WriteAt(f, x, y);
 }
 
-void FEHLCD::WriteRC(double d, int row, int col)
-{
+void FEHLCD::WriteRC(double d, int row, int col) {
     int x, y;
 
     y = row * 17;
@@ -523,8 +454,7 @@ void FEHLCD::WriteRC(double d, int row, int col)
     WriteAt(d, x, y);
 }
 
-void FEHLCD::WriteRC(bool b, int row, int col)
-{
+void FEHLCD::WriteRC(bool b, int row, int col) {
     int x, y;
 
     y = row * 17;
@@ -532,8 +462,7 @@ void FEHLCD::WriteRC(bool b, int row, int col)
     WriteAt(b, x, y);
 }
 
-void FEHLCD::WriteRC(char c, int row, int col)
-{
+void FEHLCD::WriteRC(char c, int row, int col) {
     int x, y;
 
     y = row * 17;
@@ -542,37 +471,30 @@ void FEHLCD::WriteRC(char c, int row, int col)
 }
 
 // Write to the screen
-void FEHLCD::Write(const char *str)
-{
+void FEHLCD::Write(const char *str) {
     int i = 0;
     CheckLine();
-    while (str[i] != '\0')
-    {
+    while (str[i] != '\0') {
         WriteChar(_currentline, _currentchar, str[i]);
         NextChar();
         i++;
     }
 }
 
-void FEHLCD::Write(int i)
-{
+void FEHLCD::Write(int i) {
     char num[50];
     sprintf(num, "%d", i);
     Write(num);
 }
 
-void FEHLCD::Write(float f)
-{
+void FEHLCD::Write(float f) {
     char num[50];
     int d, r;
-    if (f >= 0)
-    {
+    if (f >= 0) {
         d = (int)f;
         r = (int)((f - d) * 1000);
         sprintf(num, "%d.%03d", d, r);
-    }
-    else
-    {
+    } else {
         f *= -1;
         d = (int)f;
         r = (int)((f - d) * 1000);
@@ -581,134 +503,108 @@ void FEHLCD::Write(float f)
     Write(num);
 }
 
-void FEHLCD::Write(double d)
-{
+void FEHLCD::Write(double d) {
     Write((float)d);
 }
 
-void FEHLCD::Write(bool b)
-{
-    if (b)
-    {
+void FEHLCD::Write(bool b) {
+    if (b) {
         Write("true");
-    }
-    else
-    {
+    } else {
         Write("false");
     }
 }
 
-void FEHLCD::Write(char c)
-{
+void FEHLCD::Write(char c) {
     CheckLine();
     WriteChar(_currentline, _currentchar, c);
     NextChar();
 }
 
 // Write to the screeen and advance to next line
-void FEHLCD::WriteLine(const char *str)
-{
+void FEHLCD::WriteLine(const char *str) {
     CheckLine();
     Write(str);
     NextLine();
 }
 
-void FEHLCD::WriteLine(int i)
-{
+void FEHLCD::WriteLine(int i) {
     CheckLine();
     Write(i);
     NextLine();
 }
 
-void FEHLCD::WriteLine(float f)
-{
+void FEHLCD::WriteLine(float f) {
     CheckLine();
     Write(f);
     NextLine();
 }
 
-void FEHLCD::WriteLine(double d)
-{
+void FEHLCD::WriteLine(double d) {
     CheckLine();
     Write(d);
     NextLine();
 }
 
-void FEHLCD::WriteLine(bool b)
-{
+void FEHLCD::WriteLine(bool b) {
     CheckLine();
     Write(b);
     NextLine();
 }
 
-void FEHLCD::WriteLine(char c)
-{
+void FEHLCD::WriteLine(char c) {
     CheckLine();
     Write(c);
     NextLine();
 }
 
-typedef struct regColVal
-{
+typedef struct regColVal {
     uint32_t BVal;
     uint32_t CVal;
     uint32_t DVal;
 } RegisterColorValues;
 
-void FEHLCD::TS_SPI_Init()
-{
+void FEHLCD::TS_SPI_Init() {
 }
 
-int FEHLCD::abs(int n)
-{
-    if (n < 0)
-    {
+int FEHLCD::abs(int n) {
+    if (n < 0) {
         return -n;
-    }
-    else
-    {
+    } else {
         return n;
     }
 }
 
-void FEHLCD::_Clear()
-{
+void FEHLCD::_Clear() {
     // Currently takes in a 24-bit color as input
-    TPixel rgbValues = tigrRGB((char)(_backcolor >> 16), (char)(_backcolor >> 8), (char)_backcolor);
+    TPixel rgbValues = tigrRGB((char)(_backcolor >> 16),
+                               (char)(_backcolor >> 8), (char)_backcolor);
     tigrClear(screen, rgbValues);
 }
 
-void FEHLCD::_RepeatColor()
-{
+void FEHLCD::_RepeatColor() {
 }
 
-void FEHLCD::_BackPixel()
-{
+void FEHLCD::_BackPixel() {
 }
 
-void FEHLCD::_ForePixel()
-{
+void FEHLCD::_ForePixel() {
 }
 
-void FEHLCD::SetRegisterColorValues()
-{
+void FEHLCD::SetRegisterColorValues() {
 }
 
-void FEHLCD::WriteChar(int row, int col, char c)
-{
+void FEHLCD::WriteChar(int row, int col, char c) {
     WriteCharAt(2 + col * CHAR_WIDTH, 3 + row * CHAR_HEIGHT, c);
 }
 
-void FEHLCD::WriteCharAt(int x, int y, char c)
-{
+void FEHLCD::WriteCharAt(int x, int y, char c) {
     // Force X and Y to be positive
-    while (x < 0)
-    {
+    while (x < 0) {
         x += _width;
     }
 
-    while (y < 0)
-    {
+    while (y < 0) {
         y += _height;
     }
 
@@ -717,20 +613,20 @@ void FEHLCD::WriteCharAt(int x, int y, char c)
     y = y % _height;
 
     // Increment the line if c is the newline character
-    if (c == '\n')
-    {
+    if (c == '\n') {
         CheckLine();
         NextLine();
         return;
     }
 
-    // Force the input character to be within the supported character list. c = 32 is a space.
-    if (c > 125 || c < 32)
-    {
+    // Force the input character to be within the supported character list. c =
+    // 32 is a space.
+    if (c > 125 || c < 32) {
         c = 32;
     }
 
-    // Shift all of the input character values down by 32 so that they can be used as indexes of the fontData array
+    // Shift all of the input character values down by 32 so that they can be
+    // used as indexes of the fontData array
     c -= 32;
 
     // Look up the bitmap data out of the fontData table
@@ -743,45 +639,40 @@ void FEHLCD::WriteCharAt(int x, int y, char c)
     charData[3] = fontData[5 * c + 3];
     charData[4] = fontData[5 * c + 4];
 
-    // Plot the character data pixel-by-pixel. Each character will be doubled in size from the fontData input,
-    // becoming 10x14 instead of 5x7. There will be 2 additional columns of blank space to the left of each character
-    // and 3 additional rows of blank space below, making each character 12x17 pixels.
+    // Plot the character data pixel-by-pixel. Each character will be doubled in
+    // size from the fontData input, becoming 10x14 instead of 5x7. There will
+    // be 2 additional columns of blank space to the left of each character and
+    // 3 additional rows of blank space below, making each character 12x17
+    // pixels.
 
     // 2 blank columns
     x += 2;
 
-    for (int col = 0; col < 5; col++)
-    {
-        for (int row = 0; row < 7; row++)
-        {
+    for (int col = 0; col < 5; col++) {
+        for (int row = 0; row < 7; row++) {
             // If the current pixel is a 1 in the fontData bitmap
-            if (((charData[col] >> row) & 0x01) == 1)
-            {
-                // Draw a 2x2 rectangle to represent each pixel since sizes are doubled
+            if (((charData[col] >> row) & 0x01) == 1) {
+                // Draw a 2x2 rectangle to represent each pixel since sizes are
+                // doubled
                 FillRectangle(x + col * 2, y + row * 2, 2, 2);
             }
         }
     }
 }
 
-void FEHLCD::WriteIndex(unsigned char index)
-{
+void FEHLCD::WriteIndex(unsigned char index) {
 }
 
-void FEHLCD::WriteParameter(unsigned char param)
-{
+void FEHLCD::WriteParameter(unsigned char param) {
 }
 
-void FEHLCD::RepeatColor()
-{
+void FEHLCD::RepeatColor() {
 }
 
-unsigned int FEHLCD::ConvertFEHColorTo24Bit(FEHLCDColor color)
-{
+unsigned int FEHLCD::ConvertFEHColorTo24Bit(FEHLCDColor color) {
     unsigned int htmlColor;
 
-    switch (color)
-    {
+    switch (color) {
     case Black:
         htmlColor = BLACK;
         break;
@@ -813,223 +704,201 @@ unsigned int FEHLCD::ConvertFEHColorTo24Bit(FEHLCDColor color)
     return htmlColor;
 }
 
-unsigned int FEHLCD::Convert24BitColorTo16Bit(unsigned int color)
-{
+unsigned int FEHLCD::Convert24BitColorTo16Bit(unsigned int color) {
     unsigned char r = (color & 0xFF0000u) >> 16;
     unsigned char g = (color & 0x00FF00u) >> 8;
     unsigned char b = (color & 0x0000FFu);
     return ConvertRGBColorTo16Bit(r, g, b);
 }
 
-unsigned int FEHLCD::ConvertRGBColorTo16Bit(unsigned char r, unsigned char g, unsigned char b)
-{
+unsigned int FEHLCD::ConvertRGBColorTo16Bit(unsigned char r, unsigned char g,
+                                            unsigned char b) {
     unsigned int ru = r >> 2;
     unsigned int gu = g >> 2;
     unsigned int bu = b >> 2;
     return (ru << 12) | (gu << 6) | bu;
 }
 
-void FEHLCD::NextLine()
-{
-    if (_currentchar > 0)
-    {
+void FEHLCD::NextLine() {
+    if (_currentchar > 0) {
         _currentline++;
         _currentchar = 0;
     }
 }
 
-void FEHLCD::CheckLine()
-{
-    if (_currentline >= _maxlines)
-    {
+void FEHLCD::CheckLine() {
+    if (_currentline >= _maxlines) {
         _currentline = 0;
         _Clear();
     }
 }
 
-void FEHLCD::NextChar()
-{
+void FEHLCD::NextChar() {
     _currentchar++;
-    if (_currentchar == _maxcols)
-    {
+    if (_currentchar == _maxcols) {
         NextLine();
         CheckLine();
     }
 }
 
-void FEHLCD::SetDrawRegion(int x, int y, int width, int height)
-{
+void FEHLCD::SetDrawRegion(int x, int y, int width, int height) {
 }
 
 /*
     FEHIcon
 */
-namespace FEHIcon
-{
-    Icon::Icon()
-    {
-    }
+namespace FEHIcon {
+Icon::Icon() {
+}
 
-    /* Icon function to set position, size, label, and color */
-    void Icon::SetProperties(char name[20], int start_x, int start_y, int w, int h, unsigned int c, unsigned int tc)
-    {
-        strcpy(label, name);
-        x_start = start_x;
-        y_start = start_y;
-        width = w;
-        height = h;
-        x_end = x_start + width;
-        y_end = y_start + height;
-        color = c;
-        textcolor = tc;
-        set = 0;
-    }
+/* Icon function to set position, size, label, and color */
+void Icon::SetProperties(char name[20], int start_x, int start_y, int w, int h,
+                         unsigned int c, unsigned int tc) {
+    strcpy(label, name);
+    x_start = start_x;
+    y_start = start_y;
+    width = w;
+    height = h;
+    x_end = x_start + width;
+    y_end = y_start + height;
+    color = c;
+    textcolor = tc;
+    set = 0;
+}
 
-    /* Icon function to draw it and write label */
-    void Icon::Draw()
-    {
-        LCD.SetFontColor(color);
-        LCD.DrawRectangle(x_start, y_start, width, height);
-        LCD.SetFontColor(textcolor);
-        LCD.WriteAt(label, x_start + ((width - (strlen(label) * 12)) / 2), y_start + ((height - 17) / 2)); // equation to center text inside the icon
-    }
+/* Icon function to draw it and write label */
+void Icon::Draw() {
+    LCD.SetFontColor(color);
+    LCD.DrawRectangle(x_start, y_start, width, height);
+    LCD.SetFontColor(textcolor);
+    LCD.WriteAt(label, x_start + ((width - (strlen(label) * 12)) / 2),
+                y_start + ((height - 17) /
+                           2)); // equation to center text inside the icon
+}
 
-    /* Icon function to make the icon selected and set */
-    void Icon::Select()
-    {
-        LCD.SetFontColor(color);
-        LCD.DrawRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
-        LCD.DrawRectangle(x_start + 2, y_start + 2, width - 4, height - 4);
-        LCD.DrawRectangle(x_start + 3, y_start + 3, width - 6, height - 6);
-        set = 1;
-    }
+/* Icon function to make the icon selected and set */
+void Icon::Select() {
+    LCD.SetFontColor(color);
+    LCD.DrawRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
+    LCD.DrawRectangle(x_start + 2, y_start + 2, width - 4, height - 4);
+    LCD.DrawRectangle(x_start + 3, y_start + 3, width - 6, height - 6);
+    set = 1;
+}
 
-    /* Icon function to make the icon deselected and not set */
-    void Icon::Deselect()
-    {
-        LCD.SetFontColor(BLACK);
-        LCD.DrawRectangle(x_start + 3, y_start + 3, width - 6, height - 6);
-        LCD.DrawRectangle(x_start + 2, y_start + 2, width - 4, height - 4);
-        LCD.DrawRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
-        set = 0;
-    }
+/* Icon function to make the icon deselected and not set */
+void Icon::Deselect() {
+    LCD.SetFontColor(BLACK);
+    LCD.DrawRectangle(x_start + 3, y_start + 3, width - 6, height - 6);
+    LCD.DrawRectangle(x_start + 2, y_start + 2, width - 4, height - 4);
+    LCD.DrawRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
+    set = 0;
+}
 
-    /* Icon function to see if it has been pressed */
-    int Icon::Pressed(float x, float y, int mode)
-    {
-        if (x >= x_start && x <= x_end && y >= y_start && y <= y_end)
+/* Icon function to see if it has been pressed */
+int Icon::Pressed(float x, float y, int mode) {
+    if (x >= x_start && x <= x_end && y >= y_start && y <= y_end) {
+        LCD.Touch(&x, &y);
+        if (x >= x_start && x <= x_end && y >= y_start &&
+            y <= y_end) // check twice to avoid buggy touch screen issues
         {
-            LCD.Touch(&x, &y);
-            if (x >= x_start && x <= x_end && y >= y_start && y <= y_end) // check twice to avoid buggy touch screen issues
+            if (!mode) // if mode is 0, then alternate selecting and deselecting
+                       // as it is pressed again and again; otherwise, the icon
+                       // does not select and deselect
             {
-                if (!mode) // if mode is 0, then alternate selecting and deselecting as it is pressed again and again; otherwise, the icon does not select and deselect
-                {
-                    if (!set)
-                    {
-                        Select();
-                    }
-                    else if (set)
-                    {
-                        Deselect();
-                    }
+                if (!set) {
+                    Select();
+                } else if (set) {
+                    Deselect();
                 }
-                return 1;
             }
-        }
-        return 0;
-    }
-
-    /* Icon function to wait while it is pressed */
-    int Icon::WhilePressed(float xi, float yi)
-    {
-        float x = xi, y = yi;
-        while (Pressed(x, y, 1))
-        {
-            LCD.Touch(&x, &y);
-        }
-
-        return 0;
-    }
-
-    /* Icon function to change the label of an icon with a string */
-    void Icon::ChangeLabelString(const char new_label[])
-    {
-        if (strcmp(label, new_label))
-        {
-            strcpy(label, new_label);
-            LCD.SetFontColor(BLACK);
-            LCD.FillRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
-            Draw();
+            return 1;
         }
     }
+    return 0;
+}
 
-    /* Icon function to change the label of an icon with a float */
-    void Icon::ChangeLabelFloat(float val)
-    {
-        int length_i = strlen(label);
-        int d, r;
-        /* Convert float to string so it can be auto-centered in icon */
-        if (val >= 0)
-        {
-            d = (int)val;
-            r = (int)((val - d) * 1000);
-            sprintf(label, "%d.%03d", d, r);
-        }
-        else
-        {
-            val *= -1;
-            d = (int)val;
-            r = (int)((val - d) * 1000);
-            sprintf(label, "-%d.%03d", d, r);
-        }
-        /* If the new label is not the same length as the old one, then erase the old one so that it does not show up behind the new one */
-        if ((int) strlen(label) != length_i)
-        {
-            LCD.SetFontColor(BLACK);
-            LCD.FillRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
-        }
+/* Icon function to wait while it is pressed */
+int Icon::WhilePressed(float xi, float yi) {
+    float x = xi, y = yi;
+    while (Pressed(x, y, 1)) {
+        LCD.Touch(&x, &y);
+    }
+
+    return 0;
+}
+
+/* Icon function to change the label of an icon with a string */
+void Icon::ChangeLabelString(const char new_label[]) {
+    if (strcmp(label, new_label)) {
+        strcpy(label, new_label);
+        LCD.SetFontColor(BLACK);
+        LCD.FillRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
         Draw();
     }
+}
 
-    /* Icon function to change the label of an icon with a int */
-    void Icon::ChangeLabelInt(int val)
-    {
-        int length_i = strlen(label);
-
-        /* Convert int to string so it can be auto-centered in icon */
-        sprintf(label, "%d", val);
-
-        /* If the new label is not the same length as the old one, then erase the old one so that it does not show up behind the new one */
-        if ((int) strlen(label) != length_i)
-        {
-            LCD.SetFontColor(BLACK);
-            LCD.FillRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
-        }
-        Draw();
+/* Icon function to change the label of an icon with a float */
+void Icon::ChangeLabelFloat(float val) {
+    int length_i = strlen(label);
+    int d, r;
+    /* Convert float to string so it can be auto-centered in icon */
+    if (val >= 0) {
+        d = (int)val;
+        r = (int)((val - d) * 1000);
+        sprintf(label, "%d.%03d", d, r);
+    } else {
+        val *= -1;
+        d = (int)val;
+        r = (int)((val - d) * 1000);
+        sprintf(label, "-%d.%03d", d, r);
     }
-
-    /* Function to draw an array of icons in a given space and size and label them */
-    void DrawIconArray(Icon icon[], int rows, int cols, int top, int bot, int left, int right, char labels[][20], unsigned int col, unsigned int txtcol)
-    {
-        int xs = left;
-        int ys = top;
-        float total_w = (320. - left - right);
-        float total_h = (240. - top - bot);
-        int w = total_w / cols;
-        int h = total_h / rows;
-        int nx, ny, N = 0;
-        for (ny = 1; ny <= rows; ny++)
-        {
-            for (nx = 1; nx <= cols; nx++)
-            {
-                icon[N].SetProperties(labels[N], xs, ys, w, h, col, txtcol);
-                icon[N].Draw();
-                N = N + 1;
-                xs = xs + w;
-            }
-            ys = ys + h;
-            xs = left;
-        }
+    /* If the new label is not the same length as the old one, then erase the
+     * old one so that it does not show up behind the new one */
+    if ((int)strlen(label) != length_i) {
+        LCD.SetFontColor(BLACK);
+        LCD.FillRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
     }
+    Draw();
+}
 
-} // ns FEHIcon
+/* Icon function to change the label of an icon with a int */
+void Icon::ChangeLabelInt(int val) {
+    int length_i = strlen(label);
+
+    /* Convert int to string so it can be auto-centered in icon */
+    sprintf(label, "%d", val);
+
+    /* If the new label is not the same length as the old one, then erase the
+     * old one so that it does not show up behind the new one */
+    if ((int)strlen(label) != length_i) {
+        LCD.SetFontColor(BLACK);
+        LCD.FillRectangle(x_start + 1, y_start + 1, width - 2, height - 2);
+    }
+    Draw();
+}
+
+/* Function to draw an array of icons in a given space and size and label them
+ */
+void DrawIconArray(Icon icon[], int rows, int cols, int top, int bot, int left,
+                   int right, char labels[][20], unsigned int col,
+                   unsigned int txtcol) {
+    int xs = left;
+    int ys = top;
+    float total_w = (320. - left - right);
+    float total_h = (240. - top - bot);
+    int w = total_w / cols;
+    int h = total_h / rows;
+    int nx, ny, N = 0;
+    for (ny = 1; ny <= rows; ny++) {
+        for (nx = 1; nx <= cols; nx++) {
+            icon[N].SetProperties(labels[N], xs, ys, w, h, col, txtcol);
+            icon[N].Draw();
+            N = N + 1;
+            xs = xs + w;
+        }
+        ys = ys + h;
+        xs = left;
+    }
+}
+
+} // namespace FEHIcon

@@ -101,6 +101,9 @@ class Tank {
 
   private:
     pair<int, int> limitMousePosition(int mouseX, int mouseY) {
+#ifdef CHEAT
+        return make_pair(mouseX, mouseY);
+#else
         auto [x0, y0] = gunBasePosition();
 
         if (leftOrRight == LEFT) {
@@ -108,6 +111,7 @@ class Tank {
         } else {
             return make_pair(min(mouseX, x0), min(mouseY, y0));
         }
+#endif
     }
 
     pair<int, int> gunBasePosition() {

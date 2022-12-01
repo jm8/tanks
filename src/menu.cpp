@@ -2,6 +2,7 @@
 #include "game.h"
 #include "gamestate.h"
 #include "src/common.h"
+#include "src/statistics.h"
 #include <FEHLCD.h>
 #include <iostream>
 
@@ -62,14 +63,13 @@ void Menu::draw() {
     case STATE_CREDITS:
         writeStrings(CREDITS);
         break;
-    case STATE_STATISTICS:
-        writeStrings({
-            "Least shots:",
-            "3  DAZ",
-            "7  ABC",
-            "12 JMS",
-        });
-        break;
+    case STATE_STATISTICS: {
+        vector<Statistic> topTen = statistics->topTen();
+        writeStrings({"LEADERBOARD", "Fewest shots wins!"});
+        for (int i = 0; i < topTen.size(); i++) {
+            LCD.WriteAt(topTen[i].to_string().c_str(), 16, 16 + 18 * (i + 3));
+        }
+    } break;
     default:
         break;
     }
