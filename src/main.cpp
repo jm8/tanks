@@ -14,21 +14,33 @@
 using namespace std;
 
 int main() {
-    double t = TimeNow();
+    // Load statistics
     Statistics statistics;
     statistics.load();
+
+    // Initially menu
     GameState *gameState;
     gameState = new Menu(&statistics);
-    bool shouldPlay = false;
+
+    // if the mouse was pressed last frame
     bool mouseWasPressed = false;
+
+    // Current time
+    double t = TimeNow();
     while (true) {
+        // Update mouse information
         gameState->mouseDown =
             LCD.Touch(&gameState->mouseX, &gameState->mouseY);
         gameState->mouseJustPressed = gameState->mouseDown && !mouseWasPressed;
         mouseWasPressed = gameState->mouseDown;
+
+        // Call update and draw on current gameState.
         double newT = TimeNow();
         SwitchStateAction action = gameState->update(newT - t);
         gameState->draw();
+        t = newT;
+
+        // Switch state if necessary.
         if (action == SWITCH_STATE_GOTO_GAME) {
             delete gameState;
             gameState = new Game();
@@ -44,7 +56,6 @@ int main() {
             delete gameState;
             gameState = new WinScreen(RIGHT, numberOfShots, &statistics);
         }
-        t = newT;
     }
     return 0;
 }

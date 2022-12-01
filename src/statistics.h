@@ -7,10 +7,12 @@
 
 using namespace std;
 
+// represents one leaderboard entry (how many shots and initials)
 struct Statistic {
     int numberOfShots;
     array<char, 3> name;
 
+    // converts to a string, e.g. "ABC 12"
     string to_string() {
         return string(name.begin(), name.end()) + " " +
                std::to_string(numberOfShots);

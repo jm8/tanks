@@ -4,11 +4,13 @@
 #include <string>
 #include <vector>
 
+// The Menu
 class Menu : public GameState {
   public:
     Menu(Statistics *statistics) : statistics(statistics) {
     }
 
+    // The menu state for the different parts of the menu
     enum {
         STATE_MAIN_MENU,
         STATE_STATISTICS,
@@ -20,10 +22,14 @@ class Menu : public GameState {
     void draw();
 
   private:
+    // constants
     const char *name = "TANKS";
     const int buttonWidth = 170;
+
     Statistics *statistics;
     bool playPressed = false;
 
+    // Write a bunch of strings to the screen (for instructions and credits).
+    // written by Josh
     void writeStrings(std::vector<std::string> strings);
 };

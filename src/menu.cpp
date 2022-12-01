@@ -20,12 +20,15 @@ const vector<string> INSTRUCTIONS{
     "affect the projectile.",
 
 };
+
 const vector<string> CREDITS{
     "Created by:",
     "Joshua Sims",
     "Dennis Zhitenev",
 };
 
+// Switch state if the play button was pressed
+// written by Josh
 SwitchStateAction Menu::update(double dt) {
     return playPressed ? SWITCH_STATE_GOTO_GAME : SWITCH_STATE_STAY;
 }
@@ -36,9 +39,12 @@ void Menu::draw() {
     int oldState = state;
     switch (oldState) {
     case STATE_MAIN_MENU: {
+        // Main menu
+        // Title
         LCD.WriteAt(name, center(strlen(name) * CHAR_WIDTH, LCD_WIDTH), 32);
         int topButton = 64;
         int buttonSpace = buttonHeight + 8;
+        // Buttons
         if (button("Play", center(buttonWidth, LCD_WIDTH),
                    topButton + buttonSpace * 0, buttonWidth, buttonHeight)) {
             playPressed = true;
@@ -58,12 +64,15 @@ void Menu::draw() {
         break;
     }
     case STATE_INSTRUCTIONS:
+        // Instructions
         writeStrings(INSTRUCTIONS);
         break;
     case STATE_CREDITS:
+        // Credits
         writeStrings(CREDITS);
         break;
     case STATE_STATISTICS: {
+        // Leaderboard
         vector<Statistic> topTen = statistics->topTen();
         writeStrings({"TOP 10 by fewest shots"});
         for (int i = 0; i < topTen.size(); i++) {
@@ -73,8 +82,8 @@ void Menu::draw() {
     default:
         break;
     }
-
     if (oldState != STATE_MAIN_MENU) {
+        // Back button
         int margin = 16;
         int backButtonWidth = 16 * 6;
         if (button("Back", LCD_WIDTH - backButtonWidth - margin,
@@ -85,6 +94,7 @@ void Menu::draw() {
     }
 }
 
+// Write a bunch of strings to the screen (for instructions and credits).
 void Menu::writeStrings(vector<string> strings) {
     for (int i = 0; i < strings.size(); i++) {
         LCD.WriteAt(strings[i].c_str(), 16, 16 + 18 * i);
