@@ -16,31 +16,30 @@ unsigned int rgb(float r, float g, float b) {
     return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
 }
 
-void drawLine(int x0, int y0, int x1, int y1) {
-    int dx = abs(x1 - x0);
-    int sx = x0 < x1 ? 1 : -1;
-    int dy = -abs(y1 - y0);
-    int sy = y0 < y1 ? 1 : -1;
+void drawLine(int x1, int y1, int x2, int y2) {
+    // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+    int dx = abs(x2 - x1);
+    int sx = x1 < x2 ? 1 : -1;
+    int dy = -abs(y2 - y1);
+    int sy = y1 < y2 ? 1 : -1;
     int error = dx + dy;
 
-    // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-    const int MAX_ITERATIONS = 10000;
-    for (int i = 0; i < MAX_ITERATIONS; i++) {
-        LCD.DrawPixel(x0, y0);
-        if (x0 == x1 && y0 == y1)
+    for (int i = 0; i < 1000000; i++) {
+        LCD.DrawPixel(x1, y1);
+        if (x1 == x2 && y1 == y2)
             break;
         int e2 = 2 * error;
         if (e2 >= dy) {
-            if (x0 == x1)
+            if (x1 == x2)
                 break;
             error = error + dy;
-            x0 = x0 + sx;
+            x1 = x1 + sx;
         }
         if (e2 <= dx) {
-            if (y0 == y1)
+            if (y1 == y2)
                 break;
             error = error + dx;
-            y0 = y0 + sy;
+            y1 = y1 + sy;
         }
     }
 }

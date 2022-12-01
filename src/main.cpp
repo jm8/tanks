@@ -1,6 +1,9 @@
+// #define CHEAT
+
 #include "common.h"
 #include "game.h"
 #include "menu.h"
+#include "statistics.h"
 #include "winscreen.h"
 #include <FEHUtility.h>
 #include <cmath>
@@ -16,8 +19,10 @@ int main() {
     double t = TimeNow();
 
     // Sets gameState to the menu
+    Statistics statistics;
+    statistics.load();
     GameState *gameState;
-    gameState = new Menu();
+    gameState = new Menu(&statistics);
 
     // Initializes shouldPlay and mouseWasPressed
     bool shouldPlay = false;
@@ -37,15 +42,15 @@ int main() {
             gameState = new Game();
         } else if (action == SWITCH_STATE_GOTO_MENU) {
             delete gameState;
-            gameState = new Menu();
+            gameState = new Menu(&statistics);
         } else if (action == SWITCH_STATE_GOTO_WIN_LEFT) {
             int numberOfShots = dynamic_cast<Game *>(gameState)->numberOfShots;
             delete gameState;
-            gameState = new WinScreen(LEFT, numberOfShots);
+            gameState = new WinScreen(LEFT, numberOfShots, &statistics);
         } else if (action == SWITCH_STATE_GOTO_WIN_RIGHT) {
             int numberOfShots = dynamic_cast<Game *>(gameState)->numberOfShots;
             delete gameState;
-            gameState = new WinScreen(RIGHT, numberOfShots);
+            gameState = new WinScreen(RIGHT, numberOfShots, &statistics);
         }
         t = newT;
     }

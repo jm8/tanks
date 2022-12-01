@@ -2,6 +2,7 @@
 #include "game.h"
 #include "gamestate.h"
 #include "src/common.h"
+#include "src/statistics.h"
 #include <FEHLCD.h>
 #include <iostream>
 
@@ -62,14 +63,13 @@ void Menu::draw() {
     case STATE_CREDITS:
         writeStrings(CREDITS);
         break;
-    case STATE_STATISTICS:
-        writeStrings({
-            "Least shots:",
-            "3  DAZ",
-            "7  ABC",
-            "12 JMS",
-        });
-        break;
+    case STATE_STATISTICS: {
+        vector<Statistic> topTen = statistics->topTen();
+        writeStrings({"TOP 10 by fewest shots"});
+        for (int i = 0; i < topTen.size(); i++) {
+            LCD.WriteAt(topTen[i].to_string().c_str(), 16, 16 + 18 * (i + 2));
+        }
+    } break;
     default:
         break;
     }
@@ -89,18 +89,4 @@ void Menu::writeStrings(vector<string> strings) {
     for (int i = 0; i < strings.size(); i++) {
         LCD.WriteAt(strings[i].c_str(), 16, 16 + 18 * i);
     }
-}
-
-// Draw a button and returns if it's clicked
-bool Menu::button(const char *text, int x, int y, int width, int height) {
-    bool hover = inRectangle(x, y, width, height, mouseX, mouseY);
-    if (hover) {
-        LCD.SetFontColor(GUN_TIP_COLOR);
-    } else {
-        LCD.SetFontColor(GUN_BODY_COLOR);
-    }
-    LCD.FillRectangle(x, y, width, height);
-    LCD.SetFontColor(WHITE);
-    LCD.WriteAt(text, x + 8, y + center(16, buttonHeight));
-    return hover && mouseJustPressed;
 }

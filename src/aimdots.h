@@ -29,6 +29,6 @@ class AimDots {
     }
 
     private:
-    pair<pair<int, int>, pair<int, int>> coordinates;
+    pair<pair<int, int>, pair<int, int>> coordinates = {{-10, -10}, {-10, -10,}};
     FEHImage crossImg;
 };

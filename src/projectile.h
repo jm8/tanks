@@ -23,9 +23,11 @@ class Projectile {
 
     void update(double dt) {
         dt *= TIME_MULTIPLIER;
+#ifndef CHEAT
         xVel += windStrength * 5 * dt;
-        xPos += xVel * dt;
         yVel += GRAVITY * dt;
+#endif
+        xPos += xVel * dt;
         yPos += yVel * dt;
     }
 

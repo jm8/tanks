@@ -1,10 +1,14 @@
 #pragma once
 #include "src/gamestate.h"
+#include "src/statistics.h"
 #include <string>
 #include <vector>
 
 class Menu : public GameState {
   public:
+    Menu(Statistics *statistics) : statistics(statistics) {
+    }
+
     enum {
         STATE_MAIN_MENU,
         STATE_STATISTICS,
@@ -18,11 +22,8 @@ class Menu : public GameState {
   private:
     const char *name = "TANKS";
     const int buttonWidth = 170;
-    const int buttonHeight = 32;
+    Statistics *statistics;
     bool playPressed = false;
 
     void writeStrings(std::vector<std::string> strings);
-
-    // Draw a button and returns if it's clicked
-    bool button(const char *text, int x, int y, int width, int height);
 };

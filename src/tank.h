@@ -1,18 +1,16 @@
 #pragma once
+#include "FEHUtility.h"
 #include "common.h"
 #include "vector.h"
 #include <FEHImages.h>
+#include <FEHUtility.h>
 #include <cmath>
 #include <iostream>
 #include <utility>
-#include <FEHUtility.h>
 
 using namespace std;
 
-enum {
-	RIGHT,
-    LEFT
-};
+enum { RIGHT, LEFT };
 
 // A Tank object represents one of the tanks in the game, including its position and health
 // Mostly by Dennis
@@ -27,7 +25,7 @@ class Tank {
         health = 3;
         yPos = groundLevel - TANK_DIM;
         // Sets the side of the tank based on the enum (LEFT or RIGHT)
-		leftOrRight = lor;
+        leftOrRight = lor;
 
         int eighth = LCD_WIDTH / 8;
 
@@ -59,11 +57,11 @@ class Tank {
         // and the value in health
         if (leftOrRight) {
             for (int i = 0; i < health; i++) {
-                heartImg.Draw(5+i*12, 5);
+                heartImg.Draw(5 + i * 12, 5);
             }
         } else {
-			for (int i = 0; i < health; i++) {
-                heartImg.Draw(LCD_WIDTH-15-i*12, 5);
+            for (int i = 0; i < health; i++) {
+                heartImg.Draw(LCD_WIDTH - 15 - i * 12, 5);
             }
         }
     }
@@ -88,7 +86,9 @@ class Tank {
 
         // Limits the length of the vector to MAX_VECTOR_LENGTH
         if (result.length() > MAX_VECTOR_LENGTH) {
-            result = Vector(x0, y0, (result.dx)/result.length()*MAX_VECTOR_LENGTH, (result.dy)/result.length()*MAX_VECTOR_LENGTH);
+            result = Vector(x0, y0,
+                            (result.dx) / result.length() * MAX_VECTOR_LENGTH,
+                            (result.dy) / result.length() * MAX_VECTOR_LENGTH);
         }
 
         return result;
@@ -136,6 +136,9 @@ class Tank {
     // coordinate of the gun base
     // By Josh
     pair<int, int> limitMousePosition(int mouseX, int mouseY) {
+#ifdef CHEAT
+        return make_pair(mouseX, mouseY);
+#else
         auto [x0, y0] = gunBasePosition();
 
         if (leftOrRight == LEFT) {
@@ -143,12 +146,13 @@ class Tank {
         } else {
             return make_pair(min(mouseX, x0), min(mouseY, y0));
         }
+#endif
     }
 
 
     pair<int, int> gunBasePosition() {
-        //return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
-        return make_pair(xPos + 6 + leftOrRight*2, yPos + 3);
+        // return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
+        return make_pair(xPos + 6 + leftOrRight * 2, yPos + 3);
     }
 
     pair<int, int> tipPosition;
@@ -160,7 +164,7 @@ class Tank {
         double dist = sqrt(dx * dx + dy * dy);
         if (dist > 1) {
             tipPosition = make_pair(x0 + GUN_LENGTH * dx / dist,
-                            y0 + GUN_LENGTH * dy / dist);
+                                    y0 + GUN_LENGTH * dy / dist);
         }
         return tipPosition;
     }

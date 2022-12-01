@@ -15,7 +15,6 @@ using namespace std;
 class Game : public GameState {
 
   public:
-
     Game() {
         windStrength = randBetween(-5, 5);
     }
@@ -24,6 +23,9 @@ class Game : public GameState {
         vector = currentTank->getVectorTo(mouseX, mouseY);
 
         if (!projectile && mouseJustPressed) {
+            if (currentTank == &leftTank) {
+                numberOfShots++;
+            }
             projectile = make_optional<Projectile>(
                 vector.x, vector.y, vector.dx * SHOT_STRENGTH,
                 vector.dy * SHOT_STRENGTH, windStrength);
@@ -32,13 +34,22 @@ class Game : public GameState {
 
         if (projectile) {
             projectile->update(dt);
-            if (projectile->shouldDelete() || castle.containsPoint(projectile->xPos, projectile->yPos)
-                || inRectangle(0, leftGroundLevel, groundDipLocation, LCD_HEIGHT - leftGroundLevel,
-                projectile->xPos, projectile->yPos) || inRectangle(groundDipLocation, rightGroundLevel,
-                LCD_WIDTH - groundDipLocation, LCD_HEIGHT - rightGroundLevel, projectile->xPos, projectile->yPos)) {
+            if (projectile->shouldDelete()
+#ifndef CHEAT
+                || castle.containsPoint(projectile->xPos, projectile->yPos) ||
+                inRectangle(0, leftGroundLevel, groundDipLocation,
+                            LCD_HEIGHT - leftGroundLevel, projectile->xPos,
+                            projectile->yPos) ||
+                inRectangle(groundDipLocation, rightGroundLevel,
+                            LCD_WIDTH - groundDipLocation,
+                            LCD_HEIGHT - rightGroundLevel, projectile->xPos,
+                            projectile->yPos)
+#endif
+            ) {
                 swapTurn();
                 // projectile.reset();
-            } else if (otherTank->containsPoint(projectile->xPos, projectile->yPos)) {
+            } else if (otherTank->containsPoint(projectile->xPos,
+                                                projectile->yPos)) {
                 otherTank->drawExplosion();
                 if (!otherTank->removeLife()) {
                     if (currentTank == &leftTank) {
@@ -90,6 +101,8 @@ class Game : public GameState {
         }
 
         drawBackButton();
+
+        drawNumberOfShots();
     }
 
     int numberOfShots = 0;
@@ -108,7 +121,7 @@ class Game : public GameState {
     bool shouldGoBack;
     AimDots dots;
 
-    const int backButtonDim[4] = {10, LCD_HEIGHT-40, 80, 32};
+    const int backButtonDim[4] = {10, LCD_HEIGHT - 40, 80, 32};
     const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
 
     void drawBackButton() {
@@ -118,16 +131,15 @@ class Game : public GameState {
         } else {
             LCD.SetFontColor(GUN_BODY_COLOR);
         }
-        LCD.FillRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2], backButtonDim[3]);
+        LCD.FillRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2],
+                          backButtonDim[3]);
         LCD.SetFontColor(WHITE);
-        LCD.WriteAt("Back", backButtonDim[0] + 8, backButtonDim[1] + center(16, backButtonDim[3]));
+        LCD.WriteAt("Back", backButtonDim[0] + 8,
+                    backButtonDim[1] + center(16, backButtonDim[3]));
         shouldGoBack = hover && mouseJustPressed;
     }
 
     void swapTurn() {
-        if (currentTank == &leftTank) {
-            numberOfShots++;
-        }
         projectile.reset();
         swap(currentTank, otherTank);
         vector = currentTank->getVectorTo(mouseX, mouseY);
@@ -138,7 +150,7 @@ class Game : public GameState {
     }
 
     void drawWindHUD() {
-        LCD.WriteAt("Wind Strength:", center(CHAR_WIDTH*14, LCD_WIDTH), 5);
+        LCD.WriteAt("Wind Strength:", center(CHAR_WIDTH * 14, LCD_WIDTH), 5);
         char arrow;
         if (windStrength > 0) {
             arrow = '>';
@@ -147,6 +159,13 @@ class Game : public GameState {
         }
 
         int length = abs(windStrength);
-        LCD.WriteAt(string(length, arrow).c_str(), center(CHAR_WIDTH*length, LCD_WIDTH), 25);
+        LCD.WriteAt(string(length, arrow).c_str(),
+                    center(CHAR_WIDTH * length, LCD_WIDTH), 25);
+    }
+
+    void drawNumberOfShots() {
+        LCD.SetFontColor(WHITE);
+        LCD.WriteAt(numberOfShots, LCD_WIDTH - 16 - CHAR_WIDTH,
+                    LCD_HEIGHT - 16 - CHAR_WIDTH);
     }
 };
