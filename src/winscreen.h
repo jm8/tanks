@@ -6,7 +6,8 @@
 #include <array>
 #include <sstream>
 
-// The scren that asks for your initials when you win
+// The screen that asks for your initials when you win
+// By Josh
 class WinScreen : public GameState {
 
   public:

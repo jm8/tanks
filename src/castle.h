@@ -4,8 +4,12 @@
 
 using namespace std;
 
+// Draws a castle
+// By Dennis
 class Castle {
   public:
+    // Load the image and calculate the position
+    // By Dennis
     Castle(int groundLevel) {
         castleImg.Open("icons/castle.pic");
         xPos = (LCD_WIDTH - CASTLE_WIDTH) / 2;
@@ -13,15 +17,19 @@ class Castle {
         // castleImg.Close();
     }
 
+    // Draw castle image
+    // By Dennis
     void draw() {
         castleImg.Draw(xPos, yPos);
     }
 
+    // Check if there is a collision between the point and the castle
+    // by Dennis
     bool containsPoint(int x, int y) {
         return inRectangle(xPos, yPos, CASTLE_WIDTH, CASTLE_HEIGHT, x, y);
     }
 
   private:
-	int xPos, yPos;
-	FEHImage castleImg;
+    int xPos, yPos;
+    FEHImage castleImg;
 };

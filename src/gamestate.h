@@ -15,6 +15,7 @@ enum SwitchStateAction : int {
 const int buttonHeight = 32;
 
 // Abstract GameState class
+// by Josh
 class GameState {
   public:
     // Mouse position and status. Updated by main.
@@ -25,10 +26,12 @@ class GameState {
     // Update function, called once per frame. dt is time elapsed in seconds.
     // Returns a SwitchStateAction to possibly change do a different GameState.
     virtual SwitchStateAction update(double dt) = 0;
+
+    // Function called once per frame after update to draw
     virtual void draw() = 0;
 
-    // Draw a button and returns if it's clicked
-
+    // Draw a button and returns true if it's clicked
+    // by Josh
     bool button(const char *text, int x, int y, int width, int height) {
         bool hover = inRectangle(x, y, width, height, mouseX, mouseY);
         if (hover) {

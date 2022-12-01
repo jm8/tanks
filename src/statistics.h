@@ -7,7 +7,8 @@
 
 using namespace std;
 
-// represents one leaderboard entry (how many shots and initials)
+// Represents one leaderboard entry (how many shots and initials)
+// By Josh
 struct Statistic {
     int numberOfShots;
     array<char, 3> name;
@@ -20,7 +21,7 @@ struct Statistic {
 };
 
 // Returns true if left is worse than right (i.e. has a higher numberOfShots).
-// Falls back to alphabetical order.
+// Alphabetical order if they have the same number of shots.
 inline bool operator<(Statistic left, Statistic right) {
     if (left.numberOfShots > right.numberOfShots)
         return true;
@@ -30,8 +31,12 @@ inline bool operator<(Statistic left, Statistic right) {
                                     right.name.begin(), right.name.end());
 }
 
+// Loads and saves the leaderboard
+// Uses a priority_queue to ensure they are sorted
+// By Josh
 class Statistics {
   public:
+    // load from file
     void load() {
         ifstream file(filename);
         while (!statistics.empty())
@@ -46,6 +51,7 @@ class Statistics {
         }
     }
 
+    // save to file
     void save() {
         ofstream file(filename);
         for (Statistic statistic : topTen()) {
@@ -53,6 +59,7 @@ class Statistics {
         }
     }
 
+    // return the top 10 leaderboard spots
     vector<Statistic> topTen() {
         vector<Statistic> result;
         priority_queue<Statistic> copy(statistics);
@@ -63,6 +70,8 @@ class Statistics {
         return result;
     }
 
+    // adds one statistic to its appropriate place in the
+    // leaderboard priority_queue
     void push(Statistic statistic) {
         statistics.push(statistic);
     }
@@ -71,5 +80,7 @@ class Statistics {
     priority_queue<Statistic> statistics;
 
   private:
-    constexpr static char *const filename = "tanks_leaderboard.txt";
+    // filename to save data
+    // this is a constant
+    constexpr static const char *const filename = "tanks_leaderboard.txt";
 };

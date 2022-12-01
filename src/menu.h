@@ -23,7 +23,8 @@ const vector<string> CREDITS{
     "Dennis Zhitenev",
 };
 
-// The menu
+// The main menu
+// By Josh
 class Menu : public GameState {
   public:
     Menu(Statistics *statistics) : statistics(statistics) {
@@ -42,6 +43,7 @@ class Menu : public GameState {
         return playPressed ? SWITCH_STATE_GOTO_GAME : SWITCH_STATE_STAY;
     }
 
+    // Draw the text and buttons and respond to clicks
     void draw() {
         LCD.Clear(SKY_COLOR);
         LCD.SetFontColor(WHITE);
