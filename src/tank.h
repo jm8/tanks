@@ -3,16 +3,14 @@
 #include "common.h"
 #include "vector.h"
 #include <FEHImages.h>
+#include <FEHUtility.h>
 #include <cmath>
 #include <iostream>
 #include <utility>
 
 using namespace std;
 
-enum {
-	RIGHT,
-    LEFT
-};
+enum { RIGHT, LEFT };
 
 class Tank {
   public:
@@ -20,7 +18,7 @@ class Tank {
 
         health = 3;
         yPos = groundLevel - TANK_DIM;
-		leftOrRight = lor;
+        leftOrRight = lor;
 
         int eighth = LCD_WIDTH / 8;
 
@@ -42,11 +40,11 @@ class Tank {
 
         if (leftOrRight) {
             for (int i = 0; i < health; i++) {
-                heartImg.Draw(5+i*12, 5);
+                heartImg.Draw(5 + i * 12, 5);
             }
         } else {
-			for (int i = 0; i < health; i++) {
-                heartImg.Draw(LCD_WIDTH-15-i*12, 5);
+            for (int i = 0; i < health; i++) {
+                heartImg.Draw(LCD_WIDTH - 15 - i * 12, 5);
             }
         }
     }
@@ -63,7 +61,9 @@ class Tank {
         Vector result(x0, y0, mx - x0, my - y0);
 
         if (result.length() > MAX_VECTOR_LENGTH) {
-            result = Vector(x0, y0, (result.dx)/result.length()*MAX_VECTOR_LENGTH, (result.dy)/result.length()*MAX_VECTOR_LENGTH);
+            result = Vector(x0, y0,
+                            (result.dx) / result.length() * MAX_VECTOR_LENGTH,
+                            (result.dy) / result.length() * MAX_VECTOR_LENGTH);
         }
 
         return result;
@@ -94,8 +94,8 @@ class Tank {
 
     void drawExplosion() {
         FEHImage explosionImg;
-        explosionImg.Open("");
-        explosionImg.Draw(xPos, yPos);
+        explosionImg.Open("icons/explosion.pic");
+        explosionImg.Draw(xPos - 5, yPos - 5);
         Sleep(500);
     }
 
@@ -111,8 +111,8 @@ class Tank {
     }
 
     pair<int, int> gunBasePosition() {
-        //return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
-        return make_pair(xPos + 6 + leftOrRight*2, yPos + 3);
+        // return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
+        return make_pair(xPos + 6 + leftOrRight * 2, yPos + 3);
     }
 
     pair<int, int> tipPosition;
@@ -124,7 +124,7 @@ class Tank {
         double dist = sqrt(dx * dx + dy * dy);
         if (dist > 1) {
             tipPosition = make_pair(x0 + GUN_LENGTH * dx / dist,
-                            y0 + GUN_LENGTH * dy / dist);
+                                    y0 + GUN_LENGTH * dy / dist);
         }
         return tipPosition;
     }

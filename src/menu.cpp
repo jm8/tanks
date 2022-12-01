@@ -35,7 +35,7 @@ void Menu::draw() {
     int oldState = state;
     switch (oldState) {
     case STATE_MAIN_MENU: {
-        LCD.WriteAt(name, center(strlen(name) * 16, LCD_WIDTH), 32);
+        LCD.WriteAt(name, center(strlen(name) * CHAR_WIDTH, LCD_WIDTH), 32);
         int topButton = 64;
         int buttonSpace = buttonHeight + 8;
         if (button("Play", center(buttonWidth, LCD_WIDTH),

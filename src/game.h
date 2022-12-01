@@ -14,7 +14,6 @@ using namespace std;
 class Game : public GameState {
 
   public:
-
     Game() {
         windStrength = randBetween(-5, 5);
     }
@@ -30,13 +29,20 @@ class Game : public GameState {
 
         if (projectile) {
             projectile->update(dt);
-            if (projectile->shouldDelete() || castle.containsPoint(projectile->xPos, projectile->yPos)
-                || inRectangle(0, leftGroundLevel, groundDipLocation, LCD_HEIGHT - leftGroundLevel,
-                projectile->xPos, projectile->yPos) || inRectangle(groundDipLocation, rightGroundLevel,
-                LCD_WIDTH - groundDipLocation, LCD_HEIGHT - rightGroundLevel, projectile->xPos, projectile->yPos)) {
-                // swapTurn();
-                projectile.reset();
-            } else if (otherTank->containsPoint(projectile->xPos, projectile->yPos)) {
+            if (projectile->shouldDelete() ||
+                castle.containsPoint(projectile->xPos, projectile->yPos) ||
+                inRectangle(0, leftGroundLevel, groundDipLocation,
+                            LCD_HEIGHT - leftGroundLevel, projectile->xPos,
+                            projectile->yPos) ||
+                inRectangle(groundDipLocation, rightGroundLevel,
+                            LCD_WIDTH - groundDipLocation,
+                            LCD_HEIGHT - rightGroundLevel, projectile->xPos,
+                            projectile->yPos)) {
+                swapTurn();
+                // projectile.reset();
+            } else if (otherTank->containsPoint(projectile->xPos,
+                                                projectile->yPos)) {
+                otherTank->drawExplosion();
                 if (!otherTank->removeLife()) {
                     if (currentTank == &leftTank) {
                         return SWITCH_STATE_GOTO_WIN_LEFT;
@@ -44,10 +50,14 @@ class Game : public GameState {
                         return SWITCH_STATE_GOTO_WIN_RIGHT;
                     }
                 } else {
-                    // swapTurn();
-                    projectile.reset();
+                    swapTurn();
+                    // projectile.reset();
                 }
             }
+        }
+
+        if (shouldGoBack) {
+            return SWITCH_STATE_GOTO_MENU;
         }
 
         return SWITCH_STATE_STAY;
@@ -81,6 +91,8 @@ class Game : public GameState {
         if (projectile) {
             projectile->draw();
         }
+
+        drawBackButton();
     }
 
     int numberOfShots = 0;
@@ -96,8 +108,28 @@ class Game : public GameState {
     Castle castle = Castle(leftGroundLevel);
     optional<Projectile> projectile;
     Vector vector;
+    bool shouldGoBack;
 
+    const int backButtonDim[4] = {10, LCD_HEIGHT - 40, 80, 32};
     const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
+
+    void drawBackButton() {
+        bool hover =
+            inRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2],
+                        backButtonDim[3], mouseX, mouseY);
+        cout << mouseX << ", " << mouseY << endl;
+        if (hover) {
+            LCD.SetFontColor(GUN_TIP_COLOR);
+        } else {
+            LCD.SetFontColor(GUN_BODY_COLOR);
+        }
+        LCD.FillRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2],
+                          backButtonDim[3]);
+        LCD.SetFontColor(WHITE);
+        LCD.WriteAt("Back", backButtonDim[0] + 8,
+                    backButtonDim[1] + center(16, backButtonDim[3]));
+        shouldGoBack = hover && mouseJustPressed;
+    }
 
     void swapTurn() {
         if (currentTank == &leftTank) {
@@ -113,7 +145,7 @@ class Game : public GameState {
     }
 
     void drawWindHUD() {
-        LCD.WriteAt("Wind Strength:", center(CHAR_WIDTH*14, LCD_WIDTH), 5);
+        LCD.WriteAt("Wind Strength:", center(CHAR_WIDTH * 14, LCD_WIDTH), 5);
         char arrow;
         if (windStrength > 0) {
             arrow = '>';
@@ -122,6 +154,7 @@ class Game : public GameState {
         }
 
         int length = abs(windStrength);
-        LCD.WriteAt(string(length, arrow).c_str(), center(CHAR_WIDTH*length, LCD_WIDTH), 25);
+        LCD.WriteAt(string(length, arrow).c_str(),
+                    center(CHAR_WIDTH * length, LCD_WIDTH), 25);
     }
 };
