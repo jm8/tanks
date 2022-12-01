@@ -65,9 +65,9 @@ void Menu::draw() {
         break;
     case STATE_STATISTICS: {
         vector<Statistic> topTen = statistics->topTen();
-        writeStrings({"LEADERBOARD", "Fewest shots wins!"});
+        writeStrings({"TOP 10 by fewest shots"});
         for (int i = 0; i < topTen.size(); i++) {
-            LCD.WriteAt(topTen[i].to_string().c_str(), 16, 16 + 18 * (i + 3));
+            LCD.WriteAt(topTen[i].to_string().c_str(), 16, 16 + 18 * (i + 2));
         }
     } break;
     default:

@@ -1,4 +1,4 @@
-#define CHEAT
+// #define CHEAT
 
 #include "common.h"
 #include "game.h"

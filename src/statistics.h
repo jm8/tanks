@@ -47,7 +47,7 @@ class Statistics {
     void save() {
         ofstream file(filename);
         for (Statistic statistic : topTen()) {
-            file << statistic.to_string();
+            file << statistic.to_string() << "\n";
         }
     }
 

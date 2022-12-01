@@ -22,6 +22,9 @@ class Game : public GameState {
         vector = currentTank->getVectorTo(mouseX, mouseY);
 
         if (!projectile && mouseJustPressed) {
+            if (currentTank == &leftTank) {
+                numberOfShots++;
+            }
             projectile = make_optional<Projectile>(
                 vector.x, vector.y, vector.dx * SHOT_STRENGTH,
                 vector.dy * SHOT_STRENGTH, windStrength);
@@ -96,6 +99,8 @@ class Game : public GameState {
         }
 
         drawBackButton();
+
+        drawNumberOfShots();
     }
 
     int numberOfShots = 0;
@@ -134,9 +139,6 @@ class Game : public GameState {
     }
 
     void swapTurn() {
-        if (currentTank == &leftTank) {
-            numberOfShots++;
-        }
         projectile.reset();
         swap(currentTank, otherTank);
         vector = currentTank->getVectorTo(mouseX, mouseY);
@@ -158,5 +160,11 @@ class Game : public GameState {
         int length = abs(windStrength);
         LCD.WriteAt(string(length, arrow).c_str(),
                     center(CHAR_WIDTH * length, LCD_WIDTH), 25);
+    }
+
+    void drawNumberOfShots() {
+        LCD.SetFontColor(WHITE);
+        LCD.WriteAt(numberOfShots, LCD_WIDTH - 16 - CHAR_WIDTH,
+                    LCD_HEIGHT - 16 - CHAR_WIDTH);
     }
 };
