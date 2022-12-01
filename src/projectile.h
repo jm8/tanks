@@ -8,11 +8,17 @@
 
 using namespace std;
 
+// A Projectile object represents the projectile shot by the tanks.
+// Each object keeps track of the x and y positions, x and y
+// velocities, and the wind strength
+// Mostly by Dennis
 class Projectile {
 
   public:
     double xPos, yPos;
 
+    // Initializes the position, velocity, and wind strength
+    // By Dennis
     Projectile(double x, double y, double vx, double vy, int ws) {
         xPos = x;
         yPos = y;
@@ -21,6 +27,7 @@ class Projectile {
         windStrength = ws;
     }
 
+    // 
     void update(double dt) {
         dt *= TIME_MULTIPLIER;
 #ifndef CHEAT

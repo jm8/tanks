@@ -116,7 +116,7 @@ class Tank {
     void drawGunStraight() {
         LCD.SetFontColor(GUN_BODY_COLOR);
         auto [x0, y0] = gunBasePosition();
-        int x1 = x0 + (leftOrRight == LEFT ? 6 : -6);
+        int x1 = x0 + (leftOrRight == LEFT ? GUN_LENGTH : -1*GUN_LENGTH);
         int y1 = y0;
         drawLine(x0, y0, x1, y1);
         LCD.SetFontColor(GUN_TIP_COLOR);
@@ -149,19 +149,24 @@ class Tank {
 #endif
     }
 
-
+    // Returns the coordinates of the base of the gun based on whether this
+    // is a right or left tank
+    // By Josh
     pair<int, int> gunBasePosition() {
-        // return make_pair(xPos + (leftOrRight == LEFT ? 8 : 6), yPos + 3);
-        return make_pair(xPos + 6 + leftOrRight * 2, yPos + 3);
+        return make_pair(xPos + GUN_LENGTH + leftOrRight * 2, yPos + 3);
     }
 
     pair<int, int> tipPosition;
+
+    // Returns the position of the tip of the gun
+    // By Josh
     pair<int, int> gunTipPosition(int mouseX, int mouseY) {
         auto [x0, y0] = gunBasePosition();
         auto [mx, my] = limitMousePosition(mouseX, mouseY);
         int dx = mx - x0;
         int dy = my - y0;
         double dist = sqrt(dx * dx + dy * dy);
+        // Prevents dividing by zero
         if (dist > 1) {
             tipPosition = make_pair(x0 + GUN_LENGTH * dx / dist,
                                     y0 + GUN_LENGTH * dy / dist);
@@ -169,6 +174,7 @@ class Tank {
         return tipPosition;
     }
 
+    // Instance variables of the tank
     int xPos, yPos;
     FEHImage tankImg, heartImg, explosionImg;
     int health, leftOrRight;

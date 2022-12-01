@@ -16,6 +16,7 @@ int randBetween(int low, int high);
 // coordinates)
 int center(int size, int max_size);
 
+// Draws a line from (x0, y0) to (x1, y1)
 void drawLine(int x0, int y0, int x1, int y1);
 
 const int LCD_WIDTH = 320;
