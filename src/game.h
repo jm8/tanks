@@ -27,7 +27,7 @@ class Game : public GameState {
             projectile = make_optional<Projectile>(
                 vector.x, vector.y, vector.dx * SHOT_STRENGTH,
                 vector.dy * SHOT_STRENGTH, windStrength);
-            dots.addPoint(currentTank == &leftTank, mouseX, mouseY);
+            dots.addPoint(currentTank == &leftTank, vector.x + vector.dx, vector.y + vector.dy);
         }
 
         if (projectile) {

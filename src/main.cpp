@@ -11,11 +11,19 @@
 using namespace std;
 
 int main() {
+
+    // Sets t to the to time of the program starting
     double t = TimeNow();
+
+    // Sets gameState to the menu
     GameState *gameState;
     gameState = new Menu();
+
+    // Initializes shouldPlay and mouseWasPressed
     bool shouldPlay = false;
     bool mouseWasPressed = false;
+
+    // Infinite game loop
     while (true) {
         gameState->mouseDown =
             LCD.Touch(&gameState->mouseX, &gameState->mouseY);
