@@ -1,23 +1,6 @@
 #pragma once
 #include <FEHLCD.h>
 #include <FEHRandom.h>
-// Turns floats r, g, b (0 to 1) into a unsigned int color for use in LCD
-// eg ```rgb(1, 0.5, 0) == 0xff8000```
-unsigned int rgb(float r, float g, float b);
-
-// Returns true if the point (px, py) is in the rectangle with top left (rx, ry)
-// with size (rw, rh)
-bool inRectangle(int rx, int ry, int rw, int rh, int px, int py);
-
-int randBetween(int low, int high);
-
-// Returns the x coordinate of the left position needed to center
-// something of width size in something of width max_size. (also works with y
-// coordinates)
-int center(int size, int max_size);
-
-// Draws a line from (x0, y0) to (x1, y1)
-void drawLine(int x0, int y0, int x1, int y1);
 
 const int LCD_WIDTH = 320;
 const int LCD_HEIGHT = 240;
@@ -37,3 +20,49 @@ const unsigned int SKY_COLOR = 0x13254f;
 const unsigned int GUN_BODY_COLOR = 0x817e5b;
 const unsigned int GUN_TIP_COLOR = 0xbab37c;
 const unsigned int GROUND_COLOR = 0x484735;
+
+// Returns true if the point (px, py) is in the rectangle with top left (rx, ry)
+// with size (rw, rh)
+bool inRectangle(int rx, int ry, int rw, int rh, int px, int py) {
+    return px >= rx && px <= rx + rw && py >= ry && py <= ry + rh;
+}
+
+int randBetween(int low, int high) {
+    return low + Random.RandInt() % (high - low);
+}
+
+// Returns the x coordinate of the left position needed to center
+// something of width size in something of width max_size. (also works with y
+// coordinates)
+int center(int size, int max_size) {
+    return (max_size - size) / 2;
+};
+
+// Draws a line from (x1, y1) to (x2, y2)
+void drawLine(int x1, int y1, int x2, int y2) {
+    // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+    int dx = abs(x2 - x1);
+    int sx = x1 < x2 ? 1 : -1;
+    int dy = -abs(y2 - y1);
+    int sy = y1 < y2 ? 1 : -1;
+    int error = dx + dy;
+
+    for (int i = 0; i < 1000000; i++) {
+        LCD.DrawPixel(x1, y1);
+        if (x1 == x2 && y1 == y2)
+            break;
+        int e2 = 2 * error;
+        if (e2 >= dy) {
+            if (x1 == x2)
+                break;
+            error = error + dy;
+            x1 = x1 + sx;
+        }
+        if (e2 <= dx) {
+            if (y1 == y2)
+                break;
+            error = error + dx;
+            y1 = y1 + sy;
+        }
+    }
+}
