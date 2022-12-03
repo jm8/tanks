@@ -11,6 +11,7 @@
 class WinScreen : public GameState {
 
   public:
+    // Constructs WinScreen
     WinScreen(int player, int numberOfShots, Statistics *statistics)
         : player(player), numberOfShots(numberOfShots), statistics(statistics) {
     }
@@ -25,6 +26,7 @@ class WinScreen : public GameState {
         return SWITCH_STATE_STAY;
     }
 
+    // Draw who won, how many shots, initials input, and submit
     void draw() {
         LCD.Clear(SKY_COLOR);
 

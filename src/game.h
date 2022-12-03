@@ -1,24 +1,32 @@
 #pragma once
 #include "LCDColors.h"
+#include "aimdots.h"
 #include "castle.h"
 #include "common.h"
 #include "gamestate.h"
 #include "projectile.h"
 #include "tank.h"
 #include "vector.h"
-#include "aimdots.h"
 #include <FEHRandom.h>
 #include <optional>
 
 using namespace std;
 
+// The main Game
 class Game : public GameState {
 
   public:
+    // Chooses an initial random win strenghth.
+    // Also creates tanks and chooses random ground level.
+    // By Dennis
     Game() {
         windStrength = randBetween(-5, 5);
     }
 
+    // Updates vector, spawns projectile if mouse is clicked,
+    // deletes projectile if it touches ground, hurts tank if it touches
+    // projectile, and goes to win screen if tank is at 0 health.
+    // By both people
     SwitchStateAction update(double dt) {
         vector = currentTank->getVectorTo(mouseX, mouseY);
 
@@ -29,7 +37,8 @@ class Game : public GameState {
             projectile = make_optional<Projectile>(
                 vector.x, vector.y, vector.dx * SHOT_STRENGTH,
                 vector.dy * SHOT_STRENGTH, windStrength);
-            dots.addPoint(currentTank == &leftTank, vector.x + vector.dx, vector.y + vector.dy);
+            dots.addPoint(currentTank == &leftTank, vector.x + vector.dx,
+                          vector.y + vector.dy);
         }
 
         if (projectile) {
@@ -71,6 +80,8 @@ class Game : public GameState {
         return SWITCH_STATE_STAY;
     }
 
+    // Draws the background, the HUD, and all objects in the game.
+    // By both people
     void draw() {
         LCD.Clear(SKY_COLOR);
 
@@ -124,8 +135,12 @@ class Game : public GameState {
     const int backButtonDim[4] = {10, LCD_HEIGHT - 40, 80, 32};
     const int groundDipLocation = LCD_WIDTH / 2 + CASTLE_WIDTH / 2;
 
+    // Draw back button and respond to clicks
+    // By Dennis
     void drawBackButton() {
-        bool hover = inRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2], backButtonDim[3], mouseX, mouseY);
+        bool hover =
+            inRectangle(backButtonDim[0], backButtonDim[1], backButtonDim[2],
+                        backButtonDim[3], mouseX, mouseY);
         if (hover) {
             LCD.SetFontColor(GUN_TIP_COLOR);
         } else {
@@ -139,6 +154,9 @@ class Game : public GameState {
         shouldGoBack = hover && mouseJustPressed;
     }
 
+    // Swaps currentTank and otherTank
+    // Chooses random wind strength every other turn
+    // by both people
     void swapTurn() {
         projectile.reset();
         swap(currentTank, otherTank);
@@ -149,6 +167,8 @@ class Game : public GameState {
         }
     }
 
+    // Draw the current wind strength
+    // by Dennis
     void drawWindHUD() {
         LCD.WriteAt("Wind Strength:", center(CHAR_WIDTH * 14, LCD_WIDTH), 5);
         char arrow;
@@ -163,6 +183,8 @@ class Game : public GameState {
                     center(CHAR_WIDTH * length, LCD_WIDTH), 25);
     }
 
+    // Draw the current number of shots
+    // By Josh
     void drawNumberOfShots() {
         LCD.SetFontColor(WHITE);
         LCD.WriteAt(numberOfShots, LCD_WIDTH - 16 - CHAR_WIDTH,

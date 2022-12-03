@@ -12,8 +12,8 @@ using namespace std;
 
 enum { RIGHT, LEFT };
 
-// A Tank object represents one of the tanks in the game, including its position and health
-// Mostly by Dennis
+// A Tank object represents one of the tanks in the game, including its position
+// and health Mostly by Dennis
 class Tank {
   public:
     // Initializes the instance variables
@@ -116,7 +116,7 @@ class Tank {
     void drawGunStraight() {
         LCD.SetFontColor(GUN_BODY_COLOR);
         auto [x0, y0] = gunBasePosition();
-        int x1 = x0 + (leftOrRight == LEFT ? GUN_LENGTH : -1*GUN_LENGTH);
+        int x1 = x0 + (leftOrRight == LEFT ? GUN_LENGTH : -1 * GUN_LENGTH);
         int y1 = y0;
         drawLine(x0, y0, x1, y1);
         LCD.SetFontColor(GUN_TIP_COLOR);
@@ -126,15 +126,14 @@ class Tank {
     // Draws the explosion image generally over the tank and waits half a second
     // By Dennis
     void drawExplosion() {
-        explosionImg.Draw(xPos-5, yPos-5);
+        explosionImg.Draw(xPos - 5, yPos - 5);
         Sleep(500);
     }
 
   private:
-    // Returns the coordinates of the mouse unless the mouse is behind or below the tank.
-    // In that case, the coordinate out of bounds is set to the corresponding
-    // coordinate of the gun base
-    // By Josh
+    // Returns the coordinates of the mouse unless the mouse is behind or below
+    // the tank. In that case, the coordinate out of bounds is set to the
+    // corresponding coordinate of the gun base By Josh
     pair<int, int> limitMousePosition(int mouseX, int mouseY) {
 #ifdef CHEAT
         return make_pair(mouseX, mouseY);

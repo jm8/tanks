@@ -27,6 +27,8 @@ const vector<string> CREDITS{
 // By Josh
 class Menu : public GameState {
   public:
+    // Constructs a Menu given the statistics
+    // By Josh
     Menu(Statistics *statistics) : statistics(statistics) {
     }
 

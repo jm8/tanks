@@ -27,7 +27,8 @@ class Projectile {
         windStrength = ws;
     }
 
-    // 
+    // Move the projectile by its a velocity and applies wind and gravity forces
+    // By Dennis
     void update(double dt) {
         dt *= TIME_MULTIPLIER;
 #ifndef CHEAT
@@ -38,6 +39,8 @@ class Projectile {
         yPos += yVel * dt;
     }
 
+    // Returns true if this is off the screen
+    // By Josh
     bool shouldDelete() {
         if (yPos > LCD_HEIGHT || xPos < 0 || xPos > LCD_WIDTH) {
             return true;
@@ -46,6 +49,8 @@ class Projectile {
         }
     }
 
+    // Draws the projectile at its current position
+    // By Dennis
     void draw() {
         LCD.SetFontColor(WHITE);
         LCD.FillCircle(xPos, yPos, 2);

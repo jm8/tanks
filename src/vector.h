@@ -49,7 +49,6 @@ class Vector {
         drawLine(x0, y0, x1, y1);
     }
 
-  private:
   public:
     double x, y;
     double dx, dy;

@@ -4,6 +4,7 @@
 
 // The return value of GameState::update(), which tells what
 // GameState to switch to
+// by Josh
 enum SwitchStateAction : int {
     SWITCH_STATE_STAY,
     SWITCH_STATE_GOTO_GAME,
