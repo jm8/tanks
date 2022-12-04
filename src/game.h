@@ -171,16 +171,23 @@ class Game : public GameState {
     // by Dennis
     void drawWindHUD() {
         LCD.WriteAt("Wind Strength:", center(CHAR_WIDTH * 14, LCD_WIDTH), 5);
-        char arrow;
-        if (windStrength > 0) {
-            arrow = '>';
-        } else {
-            arrow = '<';
-        }
 
-        int length = abs(windStrength);
-        LCD.WriteAt(string(length, arrow).c_str(),
-                    center(CHAR_WIDTH * length, LCD_WIDTH), 25);
+        if (windStrength == 0) {
+            LCD.WriteAt("0",
+                        center(CHAR_WIDTH, LCD_WIDTH), 25);
+        } else {
+            char arrow;
+            if (windStrength > 0) {
+                arrow = '>';
+            } else {
+                arrow = '<';
+            }
+
+            int length = abs(windStrength);
+            LCD.WriteAt(string(length, arrow).c_str(),
+                        center(CHAR_WIDTH * length, LCD_WIDTH), 25);
+        }
+        
     }
 
     // Draw the current number of shots
