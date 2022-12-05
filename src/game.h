@@ -16,7 +16,7 @@ using namespace std;
 class Game : public GameState {
 
   public:
-    // Chooses an initial random win strenghth.
+    // Chooses an initial random wind strength.
     // Also creates tanks and chooses random ground level.
     // By Dennis
     Game() {
@@ -56,7 +56,6 @@ class Game : public GameState {
 #endif
             ) {
                 swapTurn();
-                // projectile.reset();
             } else if (otherTank->containsPoint(projectile->xPos,
                                                 projectile->yPos)) {
                 otherTank->drawExplosion();
@@ -68,7 +67,6 @@ class Game : public GameState {
                     }
                 } else {
                     swapTurn();
-                    // projectile.reset();
                 }
             }
         }
